@@ -1,0 +1,8 @@
+venv/
+__pycache__/
+*.pyc
+.DS_Store
+.env
+pulseguard_backend/venv/
+pulseguard_backend/__pycache__/
+pulseguard_backend/.env

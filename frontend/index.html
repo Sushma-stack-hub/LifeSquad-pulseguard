@@ -1,0 +1,5203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PulseGuard AI</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,500;0,700;1,300&family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden
+    }
+
+    /* ─── PAGE SYSTEM ─── */
+    .pg {
+      display: none;
+      min-height: 100vh
+    }
+
+    .pg.on {
+      display: block
+    }
+
+    /* ════════════════════════════════════
+   LOGIN PAGE
+════════════════════════════════════ */
+    #pg-login {
+      display: none;
+      min-height: 100vh;
+      background: #0d0d0d;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #pg-login.on {
+      display: flex;
+      align-items: stretch
+    }
+
+    /* Animated background grid */
+    .login-bg {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(232, 64, 42, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(232, 64, 42, 0.06) 1px, transparent 1px);
+      background-size: 48px 48px;
+      animation: gridShift 20s linear infinite;
+    }
+
+    @keyframes gridShift {
+      from {
+        transform: translate(0, 0)
+      }
+
+      to {
+        transform: translate(48px, 48px)
+      }
+    }
+
+    .login-bg-glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+    }
+
+    .login-bg-glow.g1 {
+      width: 500px;
+      height: 500px;
+      background: rgba(232, 64, 42, 0.15);
+      top: -100px;
+      left: -100px;
+      animation: drift1 8s ease-in-out infinite alternate
+    }
+
+    .login-bg-glow.g2 {
+      width: 400px;
+      height: 400px;
+      background: rgba(0, 200, 150, 0.08);
+      bottom: -80px;
+      right: -80px;
+      animation: drift2 10s ease-in-out infinite alternate
+    }
+
+    @keyframes drift1 {
+      from {
+        transform: translate(0, 0)
+      }
+
+      to {
+        transform: translate(60px, 40px)
+      }
+    }
+
+    @keyframes drift2 {
+      from {
+        transform: translate(0, 0)
+      }
+
+      to {
+        transform: translate(-40px, -60px)
+      }
+    }
+
+    /* Split layout */
+    .login-left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px 64px;
+      position: relative;
+      z-index: 1;
+      max-width: 520px;
+    }
+
+    .login-right {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 40px;
+      position: relative;
+      z-index: 1;
+      border-left: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    /* Brand */
+    .login-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 56px
+    }
+
+    .login-brand-dot {
+      width: 42px;
+      height: 42px;
+      background: #E8402A;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: hbeat 1.2s ease-in-out infinite;
+    }
+
+    @keyframes hbeat {
+
+      0%,
+      100% {
+        transform: scale(1)
+      }
+
+      50% {
+        transform: scale(1.1)
+      }
+    }
+
+    .login-brand-dot svg {
+      width: 20px;
+      height: 20px;
+      fill: white
+    }
+
+    .login-brand-name {
+      font-family: 'Fraunces', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white
+    }
+
+    .login-brand-badge {
+      background: rgba(232, 64, 42, 0.2);
+      border: 1px solid rgba(232, 64, 42, 0.4);
+      color: #FF6B52;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 100px;
+      letter-spacing: 0.06em;
+      margin-left: 4px;
+    }
+
+    .login-headline {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2.2rem, 3.5vw, 3.2rem);
+      font-weight: 700;
+      line-height: 1.15;
+      color: white;
+      margin-bottom: 14px;
+    }
+
+    .login-headline em {
+      font-style: italic;
+      color: #E8402A
+    }
+
+    .login-tagline {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.45);
+      line-height: 1.7;
+      margin-bottom: 40px;
+      max-width: 400px
+    }
+
+    /* Role selector */
+    .role-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 32px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 5px
+    }
+
+    .role-tab {
+      flex: 1;
+      padding: 11px 10px;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.45);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .25s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+
+    .role-tab.active {
+      background: white;
+      color: #1A1008;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3)
+    }
+
+    .role-tab.active.doc-tab {
+      background: #E8402A;
+      color: white
+    }
+
+    /* Form */
+    .login-form-wrap {
+      position: relative
+    }
+
+    .lf-panel {
+      display: none;
+      animation: lf-in .3s ease
+    }
+
+    .lf-panel.on {
+      display: block
+    }
+
+    @keyframes lf-in {
+      from {
+        opacity: 0;
+        transform: translateY(8px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .lf-label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.35);
+      margin-bottom: 7px
+    }
+
+    .lf-input-wrap {
+      position: relative;
+      margin-bottom: 16px
+    }
+
+    .lf-input-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1rem;
+      pointer-events: none
+    }
+
+    .lf-input {
+      width: 100%;
+      padding: 14px 14px 14px 44px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1.5px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      color: white;
+      outline: none;
+      transition: all .2s;
+    }
+
+    .lf-input::placeholder {
+      color: rgba(255, 255, 255, 0.25)
+    }
+
+    .lf-input:focus {
+      border-color: #E8402A;
+      background: rgba(232, 64, 42, 0.06)
+    }
+
+    .lf-input.doc-focus:focus {
+      border-color: #00c896;
+      background: rgba(0, 200, 150, 0.06)
+    }
+
+    .lf-error {
+      font-size: 0.8rem;
+      color: #FF6B52;
+      min-height: 20px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .lf-submit {
+      width: 100%;
+      padding: 15px;
+      border-radius: 12px;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .25s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .lf-submit.pat-btn {
+      background: #E8402A;
+      color: white
+    }
+
+    .lf-submit.pat-btn:hover {
+      background: #FF6B52;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(232, 64, 42, 0.4)
+    }
+
+    .lf-submit.doc-btn {
+      background: #00c896;
+      color: #0a0a0a
+    }
+
+    .lf-submit.doc-btn:hover {
+      background: #00dba7;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(0, 200, 150, 0.3)
+    }
+
+    .lf-hint {
+      margin-top: 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .lf-hint strong {
+      color: rgba(255, 255, 255, 0.55)
+    }
+
+    /* Right side — preview card */
+    .login-preview-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 32px;
+      width: 100%;
+      max-width: 380px;
+      backdrop-filter: blur(12px);
+    }
+
+    .lpc-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px
+    }
+
+    .lpc-title {
+      font-family: 'Fraunces', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: white
+    }
+
+    .lpc-badge {
+      background: rgba(0, 200, 150, 0.15);
+      border: 1px solid rgba(0, 200, 150, 0.3);
+      color: #00c896;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 100px
+    }
+
+    .lpc-score {
+      text-align: center;
+      margin: 0 auto 24px;
+      position: relative;
+      width: 140px;
+      height: 140px
+    }
+
+    .lpc-score svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: rotate(-90deg)
+    }
+
+    .lpc-score-track {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.06);
+      stroke-width: 10
+    }
+
+    .lpc-score-fill {
+      fill: none;
+      stroke: #E8402A;
+      stroke-width: 10;
+      stroke-linecap: round;
+      stroke-dasharray: 346;
+      stroke-dashoffset: 74;
+      animation: scoreAnim 2s ease forwards
+    }
+
+    @keyframes scoreAnim {
+      from {
+        stroke-dashoffset: 346
+      }
+
+      to {
+        stroke-dashoffset: 74
+      }
+    }
+
+    .lpc-score-num {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column
+    }
+
+    .lpc-num {
+      font-family: 'Fraunces', serif;
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: white;
+      line-height: 1
+    }
+
+    .lpc-num-sub {
+      font-size: 0.72rem;
+      color: rgba(255, 255, 255, 0.4)
+    }
+
+    .lpc-stage {
+      text-align: center;
+      background: rgba(232, 64, 42, 0.15);
+      border: 1px solid rgba(232, 64, 42, 0.3);
+      color: #FF6B52;
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 24px
+    }
+
+    .lpc-visits {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 20px
+    }
+
+    .lpc-visit {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center
+    }
+
+    .lpc-v-label {
+      font-size: 0.68rem;
+      color: rgba(255, 255, 255, 0.3);
+      margin-bottom: 4px
+    }
+
+    .lpc-v-score {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1rem
+    }
+
+    .lpc-v-bar {
+      height: 3px;
+      border-radius: 2px;
+      margin-top: 6px
+    }
+
+    .lpc-alert {
+      background: rgba(232, 64, 42, 0.1);
+      border: 1px solid rgba(232, 64, 42, 0.25);
+      border-radius: 10px;
+      padding: 11px 13px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 0.8rem;
+      color: #FF6B52;
+      font-weight: 500
+    }
+
+    .back-to-landing {
+      position: absolute;
+      top: 28px;
+      left: 32px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: rgba(255, 255, 255, 0.35);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color .2s;
+      background: none;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .back-to-landing:hover {
+      color: rgba(255, 255, 255, 0.7)
+    }
+
+    /* ════════════════════════════════════
+   LANDING PAGE
+════════════════════════════════════ */
+    #pg-landing {
+      background: #FDF6EE
+    }
+
+    :root {
+      --red: #E8402A;
+      --red-l: #FF6B52;
+      --cream: #FDF6EE;
+      --warm: #F5E6D3;
+      --dk: #1A1008;
+      --mid: #5C3D2E;
+      --soft: #A07B6A;
+      --gp: #2D7D5A;
+      --gl: #E6F5EE;
+      --ab: #F59E0B;
+      --al: #FEF3C7;
+      --black: #0a0a0a;
+      --white: #fff;
+      --gray: #f2f2f0;
+      --border: #e2e2de;
+      --dm: #888;
+      --grn: #00c896;
+      --grnd: #009e76;
+      --blu: #0ea5e9;
+    }
+
+    /* land nav */
+    .l-nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 200;
+      padding: 16px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(253, 246, 238, 0.94);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(92, 61, 46, 0.1);
+    }
+
+    .l-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Fraunces', serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--dk);
+      cursor: pointer
+    }
+
+    .l-logo-dot {
+      width: 34px;
+      height: 34px;
+      background: var(--red);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: beat 1.2s ease-in-out infinite
+    }
+
+    @keyframes beat {
+
+      0%,
+      100% {
+        transform: scale(1)
+      }
+
+      50% {
+        transform: scale(1.12)
+      }
+    }
+
+    .l-logo-dot svg {
+      width: 17px;
+      height: 17px;
+      fill: white
+    }
+
+    .l-nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none
+    }
+
+    .l-nav-links a {
+      text-decoration: none;
+      color: var(--mid);
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: color .2s
+    }
+
+    .l-nav-links a:hover {
+      color: var(--red)
+    }
+
+    .l-nav-r {
+      display: flex;
+      gap: 10px
+    }
+
+    .btn-lp {
+      background: transparent;
+      color: var(--dk);
+      border: 2px solid rgba(92, 61, 46, 0.22);
+      padding: 9px 20px;
+      border-radius: 100px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .btn-lp:hover {
+      border-color: var(--red);
+      color: var(--red)
+    }
+
+    .btn-ld {
+      background: var(--dk);
+      color: white;
+      border: none;
+      padding: 9px 20px;
+      border-radius: 100px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .btn-ld:hover {
+      background: #2d1a0e;
+      transform: translateY(-1px)
+    }
+
+    /* hero */
+    .l-hero {
+      min-height: 100vh;
+      padding: 130px 5% 80px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .l-hero::before {
+      content: '';
+      position: absolute;
+      top: -180px;
+      right: -180px;
+      width: 650px;
+      height: 650px;
+      background: radial-gradient(circle, rgba(232, 64, 42, 0.07) 0%, transparent 70%);
+      pointer-events: none
+    }
+
+    .h-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--gl);
+      color: var(--gp);
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: .04em;
+      margin-bottom: 18px
+    }
+
+    .h-badge::before {
+      content: '●';
+      font-size: .55rem;
+      animation: pdot 1.5s ease-in-out infinite
+    }
+
+    @keyframes pdot {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .3
+      }
+    }
+
+    .l-hero h1 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2.3rem, 3.8vw, 3.7rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 22px
+    }
+
+    .l-hero h1 em {
+      font-style: italic;
+      color: var(--red)
+    }
+
+    .l-hero>.l-hero-txt>p {
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: var(--mid);
+      max-width: 480px;
+      margin-bottom: 32px
+    }
+
+    .h-btns {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap
+    }
+
+    .btn-p {
+      background: var(--red);
+      color: white;
+      padding: 13px 30px;
+      border-radius: 100px;
+      font-size: .95rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all .2s;
+      border: none;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif
+    }
+
+    .btn-p:hover {
+      background: var(--red-l);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(232, 64, 42, .3)
+    }
+
+    .btn-s {
+      background: transparent;
+      color: var(--dk);
+      padding: 13px 30px;
+      border-radius: 100px;
+      font-size: .95rem;
+      font-weight: 600;
+      border: 2px solid rgba(92, 61, 46, .22);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all .2s;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif
+    }
+
+    .btn-s:hover {
+      border-color: var(--red);
+      color: var(--red)
+    }
+
+    /* hero visual */
+    .l-hero-vis {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center
+    }
+
+    .h-card {
+      background: white;
+      border-radius: 26px;
+      padding: 32px;
+      width: 100%;
+      max-width: 340px;
+      box-shadow: 0 24px 72px rgba(26, 16, 8, .12)
+    }
+
+    .h-card-hdr {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px
+    }
+
+    .h-card-title {
+      font-weight: 600;
+      font-size: .88rem;
+      color: var(--soft)
+    }
+
+    .h-status {
+      background: var(--gl);
+      color: var(--gp);
+      padding: 3px 11px;
+      border-radius: 100px;
+      font-size: .76rem;
+      font-weight: 700
+    }
+
+    .h-ring {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 18px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center
+    }
+
+    .h-ring svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: rotate(-90deg)
+    }
+
+    .h-ring .rt {
+      fill: none;
+      stroke: #F0E8E0;
+      stroke-width: 9
+    }
+
+    .h-ring .rf {
+      fill: none;
+      stroke: var(--gp);
+      stroke-width: 9;
+      stroke-linecap: round;
+      stroke-dasharray: 302;
+      stroke-dashoffset: 212;
+      animation: rfa 1.8s ease forwards
+    }
+
+    @keyframes rfa {
+      from {
+        stroke-dashoffset: 302
+      }
+
+      to {
+        stroke-dashoffset: 212
+      }
+    }
+
+    .h-rnum {
+      font-family: 'Fraunces', serif;
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: var(--dk);
+      z-index: 1;
+      text-align: center;
+      line-height: 1.1
+    }
+
+    .h-rnum span {
+      font-size: .75rem;
+      color: var(--soft)
+    }
+
+    .h-rlbl {
+      text-align: center;
+      font-size: .8rem;
+      color: var(--soft);
+      margin-bottom: 18px
+    }
+
+    .h-visits {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 7px
+    }
+
+    .h-vi {
+      background: var(--cream);
+      border-radius: 10px;
+      padding: 9px;
+      text-align: center
+    }
+
+    .h-vi-l {
+      font-size: .66rem;
+      color: var(--soft);
+      margin-bottom: 3px
+    }
+
+    .h-vi-s {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: .95rem
+    }
+
+    .h-vi-b {
+      height: 3px;
+      border-radius: 2px;
+      margin-top: 5px
+    }
+
+    .h-alert {
+      background: #FEF0EE;
+      border: 1.5px solid #FBBBB0;
+      border-radius: 9px;
+      padding: 9px 12px;
+      margin-top: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .78rem;
+      color: var(--red);
+      font-weight: 500
+    }
+
+    .h-ftag {
+      position: absolute;
+      background: white;
+      border-radius: 11px;
+      padding: 7px 13px;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, .12);
+      font-size: .78rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .ft1 {
+      top: -14px;
+      left: -18px
+    }
+
+    .ft2 {
+      bottom: -14px;
+      right: -18px
+    }
+
+    /* sections */
+    .l-sec {
+      padding: 80px 5%
+    }
+
+    .l-sec.wh {
+      background: white
+    }
+
+    .l-sec.dk {
+      background: var(--dk)
+    }
+
+    .l-sec.wa {
+      background: var(--warm)
+    }
+
+    .slbl {
+      display: inline-block;
+      background: var(--warm);
+      color: var(--mid);
+      padding: 4px 13px;
+      border-radius: 100px;
+      font-size: .76rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-bottom: 10px
+    }
+
+    .sh2 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(1.7rem, 2.8vw, 2.5rem);
+      font-weight: 700;
+      line-height: 1.25;
+      max-width: 580px;
+      margin-bottom: 10px
+    }
+
+    .ssub {
+      font-size: .96rem;
+      color: var(--mid);
+      line-height: 1.75;
+      max-width: 540px
+    }
+
+    /* steps */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 22px;
+      margin-top: 48px;
+      position: relative
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 42px;
+      left: 8%;
+      right: 8%;
+      height: 2px;
+      background: var(--warm);
+      z-index: 0
+    }
+
+    .step {
+      position: relative;
+      z-index: 1;
+      text-align: center
+    }
+
+    .step-n {
+      width: 25px;
+      height: 25px;
+      background: var(--red);
+      color: white;
+      border-radius: 50%;
+      font-size: .72rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 9px
+    }
+
+    .step-ico {
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      background: var(--cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      font-size: 1.8rem;
+      border: 3px solid var(--warm);
+      transition: all .3s
+    }
+
+    .step:hover .step-ico {
+      background: var(--red);
+      border-color: var(--red);
+      transform: scale(1.08)
+    }
+
+    .step h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 6px
+    }
+
+    .step p {
+      font-size: .83rem;
+      color: var(--mid);
+      line-height: 1.6
+    }
+
+    /* features */
+    .feat-g {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 44px
+    }
+
+    .f-card {
+      background: white;
+      border-radius: 16px;
+      padding: 26px;
+      transition: all .3s;
+      border: 1.5px solid transparent
+    }
+
+    .f-card:hover {
+      border-color: rgba(232, 64, 42, .18);
+      transform: translateY(-4px);
+      box-shadow: 0 14px 44px rgba(232, 64, 42, .07)
+    }
+
+    .f-card.hot {
+      background: var(--red)
+    }
+
+    .f-card.hot h3,
+    .f-card.hot p {
+      color: white
+    }
+
+    .f-card.hot p {
+      opacity: .85
+    }
+
+    .f-card.hot .f-ico {
+      background: rgba(255, 255, 255, .18)
+    }
+
+    .f-ico {
+      width: 46px;
+      height: 46px;
+      background: var(--cream);
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      margin-bottom: 14px
+    }
+
+    .f-card h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 7px
+    }
+
+    .f-card p {
+      font-size: .86rem;
+      color: var(--mid);
+      line-height: 1.65
+    }
+
+    /* risk guide */
+    .rg-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 44px
+    }
+
+    .rg-card {
+      border-radius: 15px;
+      padding: 22px;
+      text-align: center;
+      transition: transform .3s
+    }
+
+    .rg-card:hover {
+      transform: translateY(-5px)
+    }
+
+    .rg-card.rn {
+      background: var(--gl)
+    }
+
+    .rg-card.rs1 {
+      background: var(--al)
+    }
+
+    .rg-card.rs2,
+    .rg-card.rc {
+      background: #FEE2E2
+    }
+
+    .rg-card.rc {
+      border: 2px solid var(--red)
+    }
+
+    .rg-em {
+      font-size: 2rem;
+      margin-bottom: 10px
+    }
+
+    .rg-range {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 3px
+    }
+
+    .rg-title {
+      font-family: 'Fraunces', serif;
+      font-size: .95rem;
+      font-weight: 700;
+      margin-bottom: 5px
+    }
+
+    .rg-card p {
+      font-size: .81rem;
+      color: var(--mid);
+      line-height: 1.55
+    }
+
+    /* stats */
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-top: 44px
+    }
+
+    .s-card {
+      background: white;
+      border-radius: 16px;
+      padding: 26px;
+      text-align: center;
+      transition: transform .3s
+    }
+
+    .s-card:hover {
+      transform: translateY(-4px)
+    }
+
+    .s-num {
+      font-family: 'Fraunces', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--red);
+      line-height: 1
+    }
+
+    .s-lbl {
+      font-size: .83rem;
+      color: var(--mid);
+      margin-top: 6px;
+      line-height: 1.5
+    }
+
+    /* chatbot */
+    .cb-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 52px;
+      align-items: center;
+      margin-top: 52px
+    }
+
+    .cb-win {
+      background: #251910;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 28px 68px rgba(0, 0, 0, .4)
+    }
+
+    .cb-top {
+      background: var(--red);
+      padding: 13px 17px;
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .cb-av {
+      width: 32px;
+      height: 32px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .95rem
+    }
+
+    .cb-nm {
+      font-weight: 600;
+      font-size: .9rem;
+      color: white
+    }
+
+    .cb-st {
+      font-size: .7rem;
+      color: rgba(255, 255, 255, .8)
+    }
+
+    .cb-body {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px
+    }
+
+    .cb-bbl {
+      max-width: 80%;
+      padding: 10px 14px;
+      border-radius: 15px;
+      font-size: .83rem;
+      line-height: 1.6
+    }
+
+    .cb-bbl.ai {
+      background: #3D2518;
+      color: #F5DFD0;
+      border-bottom-left-radius: 3px;
+      align-self: flex-start
+    }
+
+    .cb-bbl.usr {
+      background: var(--red);
+      color: white;
+      border-bottom-right-radius: 3px;
+      align-self: flex-end
+    }
+
+    .cb-irow {
+      padding: 13px 16px;
+      border-top: 1px solid rgba(255, 255, 255, .07);
+      display: flex;
+      gap: 7px;
+      align-items: center
+    }
+
+    .cb-imock {
+      flex: 1;
+      background: rgba(255, 255, 255, .05);
+      border-radius: 100px;
+      padding: 8px 13px;
+      color: rgba(255, 255, 255, .28);
+      font-size: .8rem
+    }
+
+    .cb-pts {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 16px
+    }
+
+    .cb-pts li {
+      display: flex;
+      gap: 13px;
+      align-items: flex-start;
+      color: rgba(255, 255, 255, .82);
+      font-size: .9rem;
+      line-height: 1.65
+    }
+
+    .cb-ic {
+      width: 38px;
+      height: 38px;
+      min-width: 38px;
+      background: rgba(232, 64, 42, .18);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem
+    }
+
+    /* cta */
+    .cta-b {
+      background: var(--red);
+      padding: 80px 5%;
+      text-align: center;
+      color: white
+    }
+
+    .cta-b h2 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(1.9rem, 3.5vw, 2.9rem);
+      font-weight: 700;
+      margin-bottom: 12px
+    }
+
+    .cta-b p {
+      font-size: 1rem;
+      opacity: .85;
+      margin-bottom: 28px
+    }
+
+    .btn-w {
+      background: white;
+      color: var(--red);
+      padding: 13px 30px;
+      border-radius: 100px;
+      font-size: .95rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all .2s;
+      font-family: 'DM Sans', sans-serif
+    }
+
+    .btn-w:hover {
+      transform: scale(1.04);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .2)
+    }
+
+    .l-footer {
+      background: var(--dk);
+      color: rgba(255, 255, 255, .45);
+      padding: 32px 5%;
+      text-align: center;
+      font-size: .82rem
+    }
+
+    .l-footer strong {
+      color: rgba(255, 255, 255, .82)
+    }
+
+    /* reveal */
+    .rv {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .5s ease, transform .5s ease
+    }
+
+    .rv.vi {
+      opacity: 1;
+      transform: none
+    }
+
+    .rv.d1 {
+      transition-delay: .1s
+    }
+
+    .rv.d2 {
+      transition-delay: .2s
+    }
+
+    .rv.d3 {
+      transition-delay: .3s
+    }
+
+    .rv.d4 {
+      transition-delay: .4s
+    }
+
+    /* ════════════════════════════════════
+   PATIENT DASHBOARD
+════════════════════════════════════ */
+    #pg-patient {
+      background: #F7F0E8
+    }
+
+    .p-nav {
+      background: white;
+      border-bottom: 1px solid var(--warm);
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 12px rgba(0, 0, 0, .04)
+    }
+
+    .p-nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--dk)
+    }
+
+    .p-nav-dot {
+      width: 26px;
+      height: 26px;
+      background: var(--red);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: beat 1.2s ease-in-out infinite
+    }
+
+    .p-nav-dot svg {
+      width: 13px;
+      height: 13px;
+      fill: white
+    }
+
+    .p-nav-r {
+      display: flex;
+      align-items: center;
+      gap: 14px
+    }
+
+    .p-pill {
+      background: var(--warm);
+      border-radius: 100px;
+      padding: 5px 13px 5px 5px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--mid)
+    }
+
+    .p-av {
+      width: 26px;
+      height: 26px;
+      background: var(--red);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: .72rem;
+      font-weight: 700
+    }
+
+    .btn-so {
+      background: none;
+      border: none;
+      color: var(--soft);
+      font-size: .8rem;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      text-decoration: underline
+    }
+
+    .p-body {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: calc(100vh - 60px)
+    }
+
+    .p-side {
+      background: white;
+      border-right: 1px solid var(--warm);
+      padding: 20px 0
+    }
+
+    .p-side-sec {
+      font-size: .68rem;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      font-weight: 700;
+      color: var(--soft);
+      padding: 18px 20px 5px
+    }
+
+    .p-side-menu {
+      list-style: none
+    }
+
+    .p-side-menu li a {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 12px 20px;
+      color: var(--mid);
+      font-size: .87rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all .2s;
+      cursor: pointer;
+      border-right: 3px solid transparent
+    }
+
+    .p-side-menu li a:hover {
+      background: var(--cream);
+      color: var(--dk)
+    }
+
+    .p-side-menu li a.on {
+      background: var(--cream);
+      color: var(--red);
+      font-weight: 600;
+      border-right-color: var(--red)
+    }
+
+    .p-side-ico {
+      font-size: 1rem
+    }
+
+    .unread-badge {
+      background: var(--red);
+      color: white;
+      font-size: .63rem;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 100px;
+      margin-left: auto
+    }
+
+    .p-panel {
+      display: none;
+      padding: 28px 32px
+    }
+
+    .p-panel.on {
+      display: block
+    }
+
+    /* overview */
+    .p-ov-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 20px
+    }
+
+    .p-card {
+      background: white;
+      border-radius: 16px;
+      padding: 22px
+    }
+
+    .p-card h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 4px
+    }
+
+    .p-card .sub {
+      font-size: .82rem;
+      color: var(--soft)
+    }
+
+    .risk-big {
+      font-family: 'Fraunces', serif;
+      font-size: 3.2rem;
+      font-weight: 700;
+      color: var(--red);
+      line-height: 1;
+      margin: 10px 0 4px
+    }
+
+    .rs-badge {
+      display: inline-block;
+      padding: 3px 11px;
+      border-radius: 100px;
+      font-size: .77rem;
+      font-weight: 700
+    }
+
+    .rsb-n {
+      background: var(--gl);
+      color: var(--gp)
+    }
+
+    .rsb-1 {
+      background: var(--al);
+      color: #92400E
+    }
+
+    .rsb-2 {
+      background: #FEE2E2;
+      color: #B91C1C
+    }
+
+    .rsb-c {
+      background: #FEE2E2;
+      color: var(--red);
+      border: 1.5px solid var(--red)
+    }
+
+    .v-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      margin-top: 12px
+    }
+
+    .vt-row {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 9px;
+      background: var(--cream);
+      border-radius: 9px
+    }
+
+    .vt-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0
+    }
+
+    .vt-info {
+      flex: 1
+    }
+
+    .vt-lbl {
+      font-size: .74rem;
+      color: var(--soft)
+    }
+
+    .vt-sc {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: .92rem
+    }
+
+    .vt-dt {
+      font-size: .68rem;
+      color: var(--soft)
+    }
+
+    .alert-bar {
+      background: #FEF0EE;
+      border: 1.5px solid #FBBBB0;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 18px
+    }
+
+    .alert-bar h4 {
+      color: var(--red);
+      font-weight: 700;
+      font-size: .9rem;
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 5px
+    }
+
+    .alert-bar p {
+      font-size: .82rem;
+      color: var(--mid);
+      line-height: 1.6
+    }
+
+    .msg-teaser {
+      background: white;
+      border-radius: 14px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all .2s;
+      border: 1.5px solid transparent
+    }
+
+    .msg-teaser:hover {
+      border-color: rgba(232, 64, 42, .2);
+      transform: translateY(-2px)
+    }
+
+    .msg-teaser-inner {
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    /* checker */
+    .ck-card {
+      background: white;
+      border-radius: 16px;
+      padding: 26px;
+      max-width: 580px
+    }
+
+    .ck-card h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 5px
+    }
+
+    .ck-card .sub {
+      font-size: .83rem;
+      color: var(--soft);
+      margin-bottom: 20px
+    }
+
+    .ck-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 13px;
+      margin-bottom: 13px
+    }
+
+    .ck-fld label {
+      display: block;
+      font-size: .74rem;
+      font-weight: 600;
+      color: var(--mid);
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: .04em
+    }
+
+    .ck-fld input,
+    .ck-fld select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 2px solid var(--warm);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .88rem;
+      background: var(--cream);
+      color: var(--dk);
+      outline: none;
+      transition: border-color .2s
+    }
+
+    .ck-fld input:focus,
+    .ck-fld select:focus {
+      border-color: var(--red)
+    }
+
+    .btn-ck {
+      width: 100%;
+      background: var(--red);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 11px;
+      font-size: .92rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      margin-top: 7px;
+      transition: all .2s
+    }
+
+    .btn-ck:hover {
+      background: var(--red-l);
+      transform: translateY(-1px)
+    }
+
+    .ck-result {
+      border-radius: 11px;
+      padding: 14px;
+      margin-top: 16px;
+      display: none;
+      animation: fadeUp .4s ease
+    }
+
+    .ck-result.on {
+      display: block
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .ck-result h4 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 5px
+    }
+
+    /* tips */
+    .tips-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      max-width: 780px
+    }
+
+    /* ── INBOX CHAT ── */
+    .inbox {
+      display: grid;
+      grid-template-columns: 270px 1fr;
+      height: calc(100vh - 60px);
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--warm)
+    }
+
+    .conv-list {
+      border-right: 1px solid var(--warm);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden
+    }
+
+    .cl-top {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--warm);
+      flex-shrink: 0
+    }
+
+    .cl-top h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.05rem;
+      font-weight: 700
+    }
+
+    .cl-top p {
+      font-size: .74rem;
+      color: var(--soft)
+    }
+
+    .cl-scroll {
+      overflow-y: auto;
+      flex: 1
+    }
+
+    .ci {
+      padding: 13px 15px;
+      border-bottom: 1px solid rgba(0, 0, 0, .04);
+      cursor: pointer;
+      transition: background .2s;
+      display: flex;
+      gap: 11px;
+      align-items: flex-start
+    }
+
+    .ci:hover {
+      background: var(--cream)
+    }
+
+    .ci.on {
+      background: var(--cream);
+      border-left: 3px solid var(--red)
+    }
+
+    .ci-av {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      font-weight: 700;
+      color: white
+    }
+
+    .ci-info {
+      flex: 1;
+      min-width: 0
+    }
+
+    .ci-name {
+      font-weight: 600;
+      font-size: .87rem;
+      margin-bottom: 1px
+    }
+
+    .ci-prev {
+      font-size: .75rem;
+      color: var(--soft);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .ci-time {
+      font-size: .68rem;
+      color: var(--soft)
+    }
+
+    .ci-unread {
+      width: 17px;
+      height: 17px;
+      background: var(--red);
+      border-radius: 50%;
+      font-size: .62rem;
+      font-weight: 700;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px
+    }
+
+    .chat-win {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden
+    }
+
+    .cw-top {
+      padding: 13px 18px;
+      border-bottom: 1px solid var(--warm);
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      flex-shrink: 0
+    }
+
+    .cw-av {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .95rem;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0
+    }
+
+    .cw-name {
+      font-weight: 700;
+      font-size: .92rem
+    }
+
+    .cw-status {
+      font-size: .72rem;
+      color: var(--gp);
+      display: flex;
+      align-items: center;
+      gap: 3px
+    }
+
+    .cw-status::before {
+      content: '●';
+      font-size: .52rem
+    }
+
+    .cw-tag {
+      font-size: .7rem;
+      background: var(--warm);
+      color: var(--mid);
+      padding: 3px 9px;
+      border-radius: 100px;
+      font-weight: 600;
+      margin-left: auto
+    }
+
+    .chat-msgs {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px
+    }
+
+    .mr {
+      display: flex;
+      gap: 9px;
+      align-items: flex-end;
+      animation: msgin .3s ease
+    }
+
+    @keyframes msgin {
+      from {
+        opacity: 0;
+        transform: translateY(6px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .mr.me {
+      flex-direction: row-reverse
+    }
+
+    .mr-av {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .78rem;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0
+    }
+
+    .mb {
+      max-width: 70%;
+      padding: 10px 13px;
+      border-radius: 15px;
+      font-size: .85rem;
+      line-height: 1.6
+    }
+
+    .mr:not(.me) .mb {
+      background: var(--cream);
+      color: var(--dk);
+      border-bottom-left-radius: 3px
+    }
+
+    .mr.me .mb {
+      background: var(--red);
+      color: white;
+      border-bottom-right-radius: 3px
+    }
+
+    .mt {
+      font-size: .66rem;
+      color: var(--soft);
+      margin-top: 3px
+    }
+
+    .mr.me .mt {
+      text-align: right
+    }
+
+    .cw-input {
+      padding: 13px 18px;
+      border-top: 1px solid var(--warm);
+      display: flex;
+      gap: 9px;
+      align-items: center;
+      flex-shrink: 0
+    }
+
+    .cw-txt {
+      flex: 1;
+      border: 2px solid var(--warm);
+      border-radius: 100px;
+      padding: 10px 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .88rem;
+      outline: none;
+      background: var(--cream);
+      color: var(--dk);
+      transition: border-color .2s
+    }
+
+    .cw-txt:focus {
+      border-color: var(--red)
+    }
+
+    .btn-snd {
+      width: 38px;
+      height: 38px;
+      background: var(--red);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: .95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s;
+      flex-shrink: 0
+    }
+
+    .btn-snd:hover {
+      background: var(--red-l);
+      transform: scale(1.07)
+    }
+
+    .typ-row {
+      display: flex;
+      gap: 9px;
+      align-items: flex-end
+    }
+
+    .typ-bbl {
+      background: var(--cream);
+      border-radius: 15px;
+      border-bottom-left-radius: 3px;
+      padding: 11px 15px;
+      display: flex;
+      gap: 4px;
+      align-items: center
+    }
+
+    .td {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--soft);
+      animation: tdot 1.4s infinite
+    }
+
+    .td:nth-child(2) {
+      animation-delay: .2s
+    }
+
+    .td:nth-child(3) {
+      animation-delay: .4s
+    }
+
+    @keyframes tdot {
+
+      0%,
+      60%,
+      100% {
+        opacity: .3
+      }
+
+      30% {
+        opacity: 1
+      }
+    }
+
+    /* ════════════════════════════════════
+   DOCTOR DASHBOARD
+════════════════════════════════════ */
+    #pg-doctor {
+      background: var(--gray);
+      font-family: 'Manrope', sans-serif
+    }
+
+    .d-nav {
+      background: var(--white);
+      border-bottom: 1.5px solid var(--black);
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 36px;
+      position: sticky;
+      top: 0;
+      z-index: 100
+    }
+
+    .d-logo {
+      display: flex;
+      align-items: center;
+      gap: 9px
+    }
+
+    .d-logo-mk {
+      width: 30px;
+      height: 30px;
+      background: var(--black);
+      border-radius: 7px;
+      display: grid;
+      place-items: center;
+      font-size: 14px
+    }
+
+    .d-logo-tp {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 19px;
+      letter-spacing: 1px;
+      color: var(--black)
+    }
+
+    .d-logo-tp span {
+      color: var(--grn)
+    }
+
+    .d-logo-bg {
+      background: var(--grn);
+      color: var(--black);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 10px;
+      margin-left: 5px;
+      letter-spacing: .04em
+    }
+
+    .d-nav-links {
+      display: flex;
+      align-items: center;
+      gap: 3px
+    }
+
+    .d-nav-btn {
+      background: none;
+      border: none;
+      font-family: 'Manrope', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--dm);
+      padding: 6px 13px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all .15s
+    }
+
+    .d-nav-btn:hover {
+      color: var(--black);
+      background: var(--gray)
+    }
+
+    .d-nav-btn.on {
+      color: var(--black);
+      background: var(--gray)
+    }
+
+    .d-nav-r {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-size: 12px;
+      color: var(--dm)
+    }
+
+    .d-ubadge {
+      background: var(--black);
+      color: var(--white);
+      padding: 5px 11px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 11px
+    }
+
+    .btn-dso {
+      background: none;
+      border: none;
+      color: var(--dm);
+      font-size: .77rem;
+      cursor: pointer;
+      font-family: 'Manrope', sans-serif;
+      text-decoration: underline
+    }
+
+    .d-body {
+      display: grid;
+      grid-template-columns: 230px 1fr;
+      min-height: calc(100vh - 60px)
+    }
+
+    .d-side {
+      background: white;
+      border-right: 1.5px solid var(--border);
+      padding: 20px 0
+    }
+
+    .d-side-sec {
+      font-size: .63rem;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      font-weight: 700;
+      color: var(--dm);
+      padding: 16px 18px 4px
+    }
+
+    .d-side-menu {
+      list-style: none
+    }
+
+    .d-side-menu li a {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 11px 18px;
+      color: var(--dm);
+      font-size: .84rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all .15s;
+      cursor: pointer;
+      border-right: 3px solid transparent
+    }
+
+    .d-side-menu li a:hover {
+      background: var(--gray);
+      color: var(--black)
+    }
+
+    .d-side-menu li a.on {
+      background: var(--gray);
+      color: var(--black);
+      border-right-color: var(--grn)
+    }
+
+    .d-panel {
+      display: none;
+      padding: 26px 30px
+    }
+
+    .d-panel.on {
+      display: block
+    }
+
+    /* doc stats */
+    .d-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 22px
+    }
+
+    .d-stat {
+      background: white;
+      border: 1.5px solid var(--border);
+      border-radius: 11px;
+      padding: 18px;
+      transition: all .2s
+    }
+
+    .d-stat:hover {
+      border-color: var(--black);
+      transform: translateY(-2px)
+    }
+
+    .d-stat-n {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.6rem;
+      color: var(--grn);
+      line-height: 1
+    }
+
+    .d-stat-l {
+      font-size: .77rem;
+      color: var(--dm);
+      font-weight: 500;
+      margin-top: 3px
+    }
+
+    .d-sec-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: .5px;
+      margin-bottom: 12px
+    }
+
+    /* alerts */
+    .alert-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px
+    }
+
+    .al-item {
+      background: white;
+      border: 1.5px solid var(--border);
+      border-radius: 11px;
+      padding: 15px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: all .2s
+    }
+
+    .al-item:hover {
+      border-color: var(--grn);
+      transform: translateX(3px)
+    }
+
+    .al-ico {
+      font-size: 1.4rem;
+      flex-shrink: 0
+    }
+
+    .al-info {
+      flex: 1
+    }
+
+    .al-name {
+      font-weight: 700;
+      font-size: .92rem
+    }
+
+    .al-detail {
+      font-size: .79rem;
+      color: var(--dm);
+      margin-top: 1px
+    }
+
+    .al-time {
+      font-size: .72rem;
+      color: var(--dm);
+      flex-shrink: 0
+    }
+
+    .al-badge {
+      font-size: .72rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 5px
+    }
+
+    .alb-hi {
+      background: #fee2e2;
+      color: #991b1b
+    }
+
+    .alb-md {
+      background: #fef9c3;
+      color: #854d0e
+    }
+
+    .btn-cp {
+      background: var(--grn);
+      color: var(--black);
+      border: none;
+      padding: 5px 13px;
+      border-radius: 6px;
+      font-size: .75rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Manrope', sans-serif;
+      transition: all .15s;
+      flex-shrink: 0
+    }
+
+    .btn-cp:hover {
+      background: var(--grnd);
+      color: white
+    }
+
+    /* patient table */
+    .pt-wrap {
+      background: white;
+      border: 1.5px solid var(--border);
+      border-radius: 11px;
+      overflow: hidden
+    }
+
+    .pt-tbl {
+      width: 100%;
+      border-collapse: collapse
+    }
+
+    .pt-tbl th {
+      padding: 11px 14px;
+      text-align: left;
+      font-size: .69rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--dm);
+      background: var(--gray);
+      border-bottom: 1.5px solid var(--border)
+    }
+
+    .pt-tbl td {
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: .85rem
+    }
+
+    .pt-tbl tr:last-child td {
+      border-bottom: none
+    }
+
+    .pt-tbl tr:hover td {
+      background: #fafafa
+    }
+
+    .pt-nm {
+      font-weight: 600
+    }
+
+    .pt-id {
+      color: var(--dm);
+      font-size: .74rem
+    }
+
+    .rp {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 3px 9px;
+      border-radius: 100px;
+      font-size: .72rem;
+      font-weight: 700
+    }
+
+    .rp-n {
+      background: #dcfce7;
+      color: #166534
+    }
+
+    .rp-1 {
+      background: #fef9c3;
+      color: #854d0e
+    }
+
+    .rp-2 {
+      background: #fed7aa;
+      color: #9a3412
+    }
+
+    .rp-c {
+      background: #fee2e2;
+      color: #991b1b
+    }
+
+    .ap {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 100px;
+      font-size: .68rem;
+      font-weight: 700
+    }
+
+    .ap-hi {
+      background: #fee2e2;
+      color: #991b1b
+    }
+
+    .ap-md {
+      background: #fef9c3;
+      color: #854d0e
+    }
+
+    .ap-ok {
+      background: #dcfce7;
+      color: #166534
+    }
+
+    /* doc assessment */
+    .da-form {
+      background: white;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 18px;
+      max-width: 900px
+    }
+
+    .da-h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      margin-bottom: 5px;
+      letter-spacing: .5px
+    }
+
+    .da-sub {
+      font-size: .8rem;
+      color: var(--dm);
+      margin-bottom: 22px
+    }
+
+    .da-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 11px;
+      margin-bottom: 11px
+    }
+
+    .da-row2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 11px;
+      margin-bottom: 11px
+    }
+
+    .da-fld {
+      display: flex;
+      flex-direction: column;
+      gap: 4px
+    }
+
+    .da-fld label {
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--dm)
+    }
+
+    .da-fld input,
+    .da-fld select {
+      border: 1.5px solid var(--border);
+      border-radius: 7px;
+      padding: 9px 11px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 13px;
+      outline: none;
+      transition: border-color .2s;
+      background: white
+    }
+
+    .da-fld input:focus,
+    .da-fld select:focus {
+      border-color: var(--black)
+    }
+
+    .btn-da {
+      background: var(--grn);
+      color: var(--black);
+      border: none;
+      border-radius: 8px;
+      padding: 13px 26px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s
+    }
+
+    .btn-da:hover {
+      background: var(--grnd);
+      color: white
+    }
+
+    .da-result {
+      background: white;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 26px;
+      display: none;
+      max-width: 900px
+    }
+
+    .da-result.on {
+      display: block
+    }
+
+    .da-rnum {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 68px;
+      line-height: 1;
+      margin-bottom: 7px
+    }
+
+    .da-rstage {
+      font-size: 13px;
+      font-weight: 700;
+      padding: 7px 14px;
+      border-radius: 7px;
+      display: inline-block;
+      margin-bottom: 18px
+    }
+
+    .s-normal {
+      background: #dcfce7;
+      color: #166534
+    }
+
+    .s-1 {
+      background: #fef9c3;
+      color: #854d0e
+    }
+
+    .s-2 {
+      background: #fed7aa;
+      color: #9a3412
+    }
+
+    .s-crisis {
+      background: #fee2e2;
+      color: #991b1b
+    }
+
+    .da-bar {
+      height: 9px;
+      background: var(--border);
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 18px
+    }
+
+    .da-bar-fill {
+      height: 9px;
+      border-radius: 5px;
+      transition: width .6s ease
+    }
+
+    .da-notebox {
+      background: var(--gray);
+      border-radius: 7px;
+      padding: 13px;
+      margin-bottom: 14px
+    }
+
+    .da-notelbl {
+      font-size: .68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--dm);
+      margin-bottom: 7px
+    }
+
+    /* ── RESULTS PANEL ── */
+    .res-panel {
+      display: none;
+      margin-top: 20px;
+      animation: fadeUp .4s ease
+    }
+
+    .res-panel.on {
+      display: block
+    }
+
+    .res-stage-box {
+      border-radius: 14px;
+      padding: 24px;
+      text-align: center;
+      margin-bottom: 16px
+    }
+
+    .res-stage-name {
+      font-family: 'Fraunces', serif;
+      font-size: 38px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 6px
+    }
+
+    .res-score-txt {
+      font-size: 14px;
+      font-weight: 600;
+      opacity: .75
+    }
+
+    .res-bar-wrap {
+      margin: 14px 0 6px
+    }
+
+    .res-bar-bg {
+      height: 10px;
+      background: rgba(0, 0, 0, .08);
+      border-radius: 99px;
+      overflow: hidden
+    }
+
+    .res-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 1s cubic-bezier(.34, 1.56, .64, 1)
+    }
+
+    .res-prob-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 14px 0
+    }
+
+    .res-prob-item {
+      background: var(--cream);
+      border-radius: 10px;
+      padding: 10px 6px;
+      text-align: center;
+      border: 1px solid var(--warm)
+    }
+
+    .res-prob-pct {
+      font-family: 'Fraunces', serif;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 2px
+    }
+
+    .res-prob-lbl {
+      font-size: 10px;
+      color: var(--soft);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .3px
+    }
+
+    .res-rec-box {
+      background: var(--cream);
+      border-left: 4px solid var(--red);
+      border-radius: 0 10px 10px 0;
+      padding: 14px 16px;
+      font-size: 13px;
+      line-height: 1.75;
+      white-space: pre-line;
+      color: var(--dk);
+      margin: 12px 0
+    }
+
+    .btn-pdf {
+      width: 100%;
+      background: var(--red);
+      color: white;
+      border: none;
+      border-radius: 11px;
+      padding: 13px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .93rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all .2s
+    }
+
+    .btn-pdf:hover {
+      background: var(--red-l);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(232, 64, 42, .35)
+    }
+
+    .btn-pdf:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none
+    }
+
+    .pdf-status {
+      margin-top: 10px;
+      padding: 9px 13px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      text-align: center;
+      display: none
+    }
+
+    .pdf-status.ok {
+      background: var(--gl);
+      color: var(--gp);
+      display: block
+    }
+
+    .pdf-status.err {
+      background: #FEF0EE;
+      color: var(--red);
+      display: block
+    }
+
+    .pdf-spinner {
+      width: 16px;
+      height: 16px;
+      border: 2.5px solid rgba(255, 255, 255, .3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      display: none
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .res-divider {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 14px 0 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .res-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--warm)
+    }
+
+    /* doc inbox */
+    .d-inbox {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      height: calc(100vh - 60px);
+      background: white;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1.5px solid var(--border)
+    }
+
+    .d-inbox .ci.on {
+      border-left-color: var(--grn)
+    }
+
+    .d-inbox .cw-txt:focus {
+      border-color: var(--grn)
+    }
+
+    .d-inbox .btn-snd {
+      background: var(--grn);
+      color: var(--black)
+    }
+
+    .d-inbox .btn-snd:hover {
+      background: var(--grnd);
+      color: white
+    }
+
+    .d-inbox .mr.me .mb {
+      background: var(--grn);
+      color: var(--black)
+    }
+
+    .d-inbox .ci-av-doc {
+      background: var(--gp)
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══════════════════════════════════════
+     LOGIN PAGE
+══════════════════════════════════════ -->
+  <div id="pg-login" class="pg">
+    <div class="login-bg"></div>
+    <div class="login-bg-glow g1"></div>
+    <div class="login-bg-glow g2"></div>
+
+    <button class="back-to-landing" onclick="show('landing')">← Back to Home</button>
+
+    <!-- LEFT: Form -->
+    <div class="login-left">
+      <div class="login-brand">
+        <div class="login-brand-dot">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 21.593C-6.196 13.27 6.94 0 12 5.964 17.06 0 30.196 13.27 12 21.593z" />
+          </svg>
+        </div>
+        <div>
+          <span class="login-brand-name">PulseGuard AI</span>
+          <span class="login-brand-badge">2026</span>
+        </div>
+      </div>
+
+      <div class="login-headline">
+        Welcome<br><em>back.</em>
+      </div>
+      <p class="login-tagline">Sign in to access your personalised heart health dashboard — or your clinical patient
+        portal.</p>
+
+      <!-- Role tabs -->
+      <div class="role-tabs">
+        <button class="role-tab active" id="tab-pat" onclick="switchRole('patient')">❤️ Patient</button>
+        <button class="role-tab doc-tab" id="tab-doc" onclick="switchRole('doctor')">👨‍⚕️ Healthcare Provider</button>
+      </div>
+
+      <!-- Patient form -->
+      <div class="login-form-wrap">
+        <div class="lf-panel on" id="form-patient">
+          <label class="lf-label">Username</label>
+          <div class="lf-input-wrap">
+            <span class="lf-input-icon">👤</span>
+            <input class="lf-input" id="pu" type="text" placeholder="e.g. jane.doe" autocomplete="username" />
+          </div>
+          <label class="lf-label">Password</label>
+          <div class="lf-input-wrap">
+            <span class="lf-input-icon">🔒</span>
+            <input class="lf-input" id="pp" type="password" placeholder="Enter your password"
+              onkeypress="if(event.key==='Enter')doLogin('patient')" />
+          </div>
+          <div class="lf-error" id="pe"></div>
+          <button class="lf-submit pat-btn" onclick="doLogin('patient')">Sign In to My Health Portal →</button>
+          <div class="lf-hint">💡 Demo — username: <strong>jane</strong> &nbsp;·&nbsp; password: <strong>1234</strong>
+          </div>
+        </div>
+
+        <!-- Doctor form -->
+        <div class="lf-panel" id="form-doctor">
+          <label class="lf-label">Doctor Username</label>
+          <div class="lf-input-wrap">
+            <span class="lf-input-icon">🏥</span>
+            <input class="lf-input doc-focus" id="du" type="text" placeholder="e.g. dr.sharma"
+              autocomplete="username" />
+          </div>
+          <label class="lf-label">Password</label>
+          <div class="lf-input-wrap">
+            <span class="lf-input-icon">🔒</span>
+            <input class="lf-input doc-focus" id="dp" type="password" placeholder="Clinical portal password"
+              onkeypress="if(event.key==='Enter')doLogin('doctor')" />
+          </div>
+          <div class="lf-error" id="de"></div>
+          <button class="lf-submit doc-btn" onclick="doLogin('doctor')">Access Clinical Portal →</button>
+          <div class="lf-hint">💡 Demo — username: <strong>sharma</strong> &nbsp;·&nbsp; password:
+            <strong>doc123</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Preview card -->
+    <div class="login-right">
+      <div class="login-preview-card">
+        <div class="lpc-header">
+          <div class="lpc-title">Patient Risk Monitor</div>
+          <div class="lpc-badge">● Live</div>
+        </div>
+        <div class="lpc-score" style="margin:0 auto 18px">
+          <svg width="140" height="140">
+            <circle class="lpc-score-track" cx="70" cy="70" r="55" />
+            <circle class="lpc-score-fill" cx="70" cy="70" r="55" />
+          </svg>
+          <div class="lpc-score-num">
+            <div class="lpc-num">78%</div>
+            <div class="lpc-num-sub">Risk Score</div>
+          </div>
+        </div>
+        <div class="lpc-stage">⚠️ Stage 2 Hypertension</div>
+        <div class="lpc-visits">
+          <div class="lpc-visit">
+            <div class="lpc-v-label">Visit 1</div>
+            <div class="lpc-v-score" style="color:#2D7D5A">30%</div>
+            <div class="lpc-v-bar" style="background:#2D7D5A"></div>
+          </div>
+          <div class="lpc-visit">
+            <div class="lpc-v-label">Visit 2</div>
+            <div class="lpc-v-score" style="color:#F59E0B">55%</div>
+            <div class="lpc-v-bar" style="background:#F59E0B"></div>
+          </div>
+          <div class="lpc-visit">
+            <div class="lpc-v-label">Visit 3</div>
+            <div class="lpc-v-score" style="color:#E8402A">78%</div>
+            <div class="lpc-v-bar" style="background:#E8402A"></div>
+          </div>
+        </div>
+        <div class="lpc-alert">⚠️ HIGH ALERT — Doctor notified automatically</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+     LANDING PAGE
+══════════════════════════════════════ -->
+  <div id="pg-landing" class="pg on">
+
+    <nav class="l-nav">
+      <div class="l-logo" onclick="show('landing')">
+        <div class="l-logo-dot"><svg viewBox="0 0 24 24">
+            <path d="M12 21.593C-6.196 13.27 6.94 0 12 5.964 17.06 0 30.196 13.27 12 21.593z" />
+          </svg></div>
+        PulseGuard AI
+      </div>
+      <ul class="l-nav-links">
+        <li><a href="#l-how">How It Works</a></li>
+        <li><a href="#l-feat">Features</a></li>
+        <li><a href="#l-risk">Risk Guide</a></li>
+        <li><a href="#l-chat">AI Chatbot</a></li>
+      </ul>
+      <div class="l-nav-r">
+        <button class="btn-lp" onclick="show('login')">Sign In</button>
+        <button class="btn-ld" onclick="show('login')">Get Started →</button>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="l-hero">
+      <div class="l-hero-txt">
+        <div class="h-badge">GenAI Forge 2026 · Healthcare AI</div>
+        <h1>Your <em>heart health</em> guardian that never sleeps</h1>
+        <p>PulseGuard AI watches your blood pressure patterns over time and warns you <strong>before</strong> a problem
+          becomes serious — in plain, easy-to-understand language.</p>
+        <div class="h-btns">
+          <button class="btn-p" onclick="show('login')">❤️ Get Started — Free</button>
+          <button class="btn-s" onclick="document.getElementById('l-how').scrollIntoView({behavior:'smooth'})">Learn How
+            It Works</button>
+        </div>
+      </div>
+      <div class="l-hero-vis">
+        <div class="h-ftag ft1">🛡️ Proactive Protection</div>
+        <div class="h-card">
+          <div class="h-card-hdr">
+            <div class="h-card-title">Patient Risk Monitor</div>
+            <div class="h-status">✓ Stable</div>
+          </div>
+          <div class="h-ring">
+            <svg width="120" height="120">
+              <circle class="rt" cx="60" cy="60" r="48" />
+              <circle class="rf" cx="60" cy="60" r="48" />
+            </svg>
+            <div class="h-rnum">30%<br><span>Risk Score</span></div>
+          </div>
+          <div class="h-rlbl">Stage: Normal</div>
+          <div class="h-visits">
+            <div class="h-vi">
+              <div class="h-vi-l">Visit 1</div>
+              <div class="h-vi-s" style="color:#2D7D5A">30%</div>
+              <div class="h-vi-b" style="background:#2D7D5A"></div>
+            </div>
+            <div class="h-vi">
+              <div class="h-vi-l">Visit 2</div>
+              <div class="h-vi-s" style="color:#F59E0B">55%</div>
+              <div class="h-vi-b" style="background:#F59E0B"></div>
+            </div>
+            <div class="h-vi">
+              <div class="h-vi-l">Visit 3</div>
+              <div class="h-vi-s" style="color:#E8402A">78%</div>
+              <div class="h-vi-b" style="background:#E8402A"></div>
+            </div>
+          </div>
+          <div class="h-alert">⚠️ HIGH ALERT — Doctor notified</div>
+        </div>
+        <div class="h-ftag ft2">🤖 AI Chatbot Explains It</div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="l-sec wh" id="l-how">
+      <div class="slbl rv">Simple Steps</div>
+      <div class="sh2 rv d1">How does PulseGuard AI work?</div>
+      <p class="ssub rv d2">No medical degree needed. Here's everything explained simply.</p>
+      <div class="steps">
+        <div class="step rv d1">
+          <div class="step-n">1</div>
+          <div class="step-ico">📋</div>
+          <h3>Share Basic Info</h3>
+          <p>Enter your age, weight, and blood pressure readings. No complicated forms.</p>
+        </div>
+        <div class="step rv d2">
+          <div class="step-n">2</div>
+          <div class="step-ico">🧠</div>
+          <h3>AI Analyses Instantly</h3>
+          <p>Our system trained on 1,825 patient records calculates your risk score in seconds.</p>
+        </div>
+        <div class="step rv d3">
+          <div class="step-n">3</div>
+          <div class="step-ico">📈</div>
+          <h3>We Watch Over Time</h3>
+          <p>Each visit, your score is tracked. If risk is rising, we catch it early.</p>
+        </div>
+        <div class="step rv d4">
+          <div class="step-n">4</div>
+          <div class="step-ico">💬</div>
+          <h3>Talk to Your Doctor</h3>
+          <p>Message your doctor directly through PulseGuard for clear, personalised advice.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="l-sec" id="l-feat">
+      <div class="slbl rv">What Makes Us Different</div>
+      <div class="sh2 rv d1">Built to protect you, before things get serious</div>
+      <div class="feat-g">
+        <div class="f-card hot rv">
+          <div class="f-ico">📡</div>
+          <h3>Risk Drift Detection</h3>
+          <p>Most tools check once and forget. PulseGuard watches your risk score across every visit and alerts your
+            doctor automatically when it rises.</p>
+        </div>
+        <div class="f-card rv d1">
+          <div class="f-ico">🎯</div>
+          <h3>95.2% Accurate</h3>
+          <p>We tested 7 AI models and picked the most reliable one — genuinely safe to trust with your health
+            decisions.</p>
+        </div>
+        <div class="f-card rv d2">
+          <div class="f-ico">💬</div>
+          <h3>Chat With Your Doctor</h3>
+          <p>Send messages directly to your doctor inside PulseGuard. No phone tag — just clear, direct communication.
+          </p>
+        </div>
+        <div class="f-card rv d3">
+          <div class="f-ico">🌐</div>
+          <h3>Designed for Everyone</h3>
+          <p>Whether you're tech-savvy or not, our interface is clear and friendly. Future versions support Hindi,
+            Telugu and more.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- RISK GUIDE -->
+    <section class="l-sec wh" id="l-risk">
+      <div class="slbl rv">Understanding Your Results</div>
+      <div class="sh2 rv d1">What do the risk levels mean?</div>
+      <p class="ssub rv d2">PulseGuard puts your blood pressure into four simple stages. Here's what each one means in
+        everyday language.</p>
+      <div class="rg-grid">
+        <div class="rg-card rn rv">
+          <div class="rg-em">😊</div>
+          <div class="rg-range" style="color:#2D7D5A">Normal</div>
+          <div class="rg-title">You're doing great!</div>
+          <p>Keep up good habits — regular exercise, balanced diet, and periodic check-ins.</p>
+        </div>
+        <div class="rg-card rs1 rv d1">
+          <div class="rg-em">😐</div>
+          <div class="rg-range" style="color:#92400E">Stage 1</div>
+          <div class="rg-title">Mildly elevated</div>
+          <p>Small lifestyle changes like less salt and more walks can often bring it back to normal.</p>
+        </div>
+        <div class="rg-card rs2 rv d2">
+          <div class="rg-em">😟</div>
+          <div class="rg-range" style="color:#B91C1C">Stage 2</div>
+          <div class="rg-title">Needs attention</div>
+          <p>Your doctor should know about this. Very manageable with the right treatment plan.</p>
+        </div>
+        <div class="rg-card rc rv d3">
+          <div class="rg-em">🚨</div>
+          <div class="rg-range" style="color:#E8402A">Crisis</div>
+          <div class="rg-title">Seek help now</div>
+          <p>Please see a doctor immediately. PulseGuard will alert your healthcare provider.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI CHATBOT -->
+    <section class="l-sec dk" id="l-chat">
+      <div class="slbl rv" style="background:rgba(232,64,42,.18);color:#FF6B52">Your Health Companion</div>
+      <div class="sh2 rv d1" style="color:white">Ask anything.<br>We explain everything.</div>
+      <div class="cb-wrap">
+        <div class="cb-win rv">
+          <div class="cb-top">
+            <div class="cb-av">🤖</div>
+            <div>
+              <div class="cb-nm">PulseGuard Assistant</div>
+              <div class="cb-st">● Online · Always here</div>
+            </div>
+          </div>
+          <div class="cb-body">
+            <div class="cb-bbl ai">Hello! 👋 Your risk score went from 30% → 78% across 3 visits. Want me to explain
+              what this means?</div>
+            <div class="cb-bbl usr">Yes please! Is this dangerous?</div>
+            <div class="cb-bbl ai">Your score rising to 78% means Stage 2 hypertension — like a car's temperature gauge
+              creeping into the red. It needs attention now, but it's absolutely treatable. I've already notified your
+              doctor. 🩺</div>
+            <div class="cb-bbl usr">What should I do right now?</div>
+            <div class="cb-bbl ai">1️⃣ Don't panic — catching this early is good news. 2️⃣ Call your doctor today. 3️⃣
+              Reduce salt, avoid caffeine. 4️⃣ Rest until reviewed. You've got this! 💪</div>
+          </div>
+          <div class="cb-irow">
+            <div class="cb-imock">Ask me anything about your health…</div>
+          </div>
+        </div>
+        <ul class="cb-pts rv d1">
+          <li>
+            <div class="cb-ic">🗣️</div>
+            <div><strong style="color:white">Plain language always.</strong> No confusing medical terms. Results
+              explained like a caring friend would.</div>
+          </li>
+          <li>
+            <div class="cb-ic">⚡</div>
+            <div><strong style="color:white">Instant answers.</strong> Get clarity right after your checkup — not days
+              later.</div>
+          </li>
+          <li>
+            <div class="cb-ic">💬</div>
+            <div><strong style="color:white">Message your doctor.</strong> Send questions directly to your doctor
+              through the app, anytime.</div>
+          </li>
+          <li>
+            <div class="cb-ic">🔒</div>
+            <div><strong style="color:white">Private and secure.</strong> Your health data is treated with the same care
+              a doctor would give it.</div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="l-sec wa">
+      <div class="slbl rv">By The Numbers</div>
+      <div class="sh2 rv d1">Real impact, real results</div>
+      <div class="stat-row">
+        <div class="s-card rv">
+          <div class="s-num">1,825</div>
+          <div class="s-lbl">Patient records used to train our AI model</div>
+        </div>
+        <div class="s-card rv d1">
+          <div class="s-num">95.2%</div>
+          <div class="s-lbl">Accuracy in detecting hypertension stages</div>
+        </div>
+        <div class="s-card rv d2">
+          <div class="s-num">4</div>
+          <div class="s-lbl">Stages detected: Normal → Crisis</div>
+        </div>
+        <div class="s-card rv d3">
+          <div class="s-num">≥15%</div>
+          <div class="s-lbl">Risk rise triggers an automatic doctor alert</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <div class="cta-b">
+      <h2>Your heart works hard for you.<br>Let us help protect it.</h2>
+      <p>PulseGuard AI — Making Hypertension Care Proactive, Not Reactive.</p>
+      <button class="btn-w" onclick="show('login')">❤️ Get Started Today</button>
+    </div>
+
+    <div class="l-footer">
+      <p><strong>PulseGuard AI</strong> · GenAI Forge 2026 · Healthcare AI / Machine Learning</p>
+      <p style="margin-top:7px">Not a substitute for professional medical advice.</p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+     PATIENT DASHBOARD
+══════════════════════════════════════ -->
+  <div id="pg-patient" class="pg">
+    <nav class="p-nav">
+      <div class="p-nav-logo">
+        <div class="p-nav-dot"><svg viewBox="0 0 24 24">
+            <path d="M12 21.593C-6.196 13.27 6.94 0 12 5.964 17.06 0 30.196 13.27 12 21.593z" />
+          </svg></div>
+        PulseGuard AI
+      </div>
+      <div class="p-nav-r">
+        <div class="p-pill">
+          <div class="p-av" id="pNavAv">JD</div><span id="pNavName">Jane Doe</span>
+        </div>
+        <button class="btn-so" onclick="signout()">Sign Out</button>
+      </div>
+    </nav>
+    <div class="p-body">
+      <div class="p-side">
+        <div class="p-side-sec">Main</div>
+        <ul class="p-side-menu">
+          <li><a class="on" onclick="pPanel('p-ov')"><span class="p-side-ico">🏠</span> My Health Overview</a></li>
+          <li><a onclick="pPanel('p-ck')"><span class="p-side-ico">🔍</span> Check My Risk</a></li>
+          <li><a onclick="pPanel('p-chat')"><span class="p-side-ico">💬</span> Chat with Doctor<span
+                class="unread-badge" id="p-unread-badge">1</span></a></li>
+        </ul>
+        <div class="p-side-sec">Info</div>
+        <ul class="p-side-menu">
+          <li><a onclick="pPanel('p-tips')"><span class="p-side-ico">💡</span> Health Tips</a></li>
+        </ul>
+      </div>
+      <div style="overflow-y:auto">
+
+        <!-- Overview -->
+        <div class="p-panel on" id="p-ov">
+          <h2 style="font-family:'Fraunces',serif;font-size:1.55rem;font-weight:700;margin-bottom:5px">Good morning,
+            <span id="pFirstName">Jane</span> 👋
+          </h2>
+          <p style="color:var(--soft);font-size:.88rem;margin-bottom:20px">Here's your latest heart health summary.</p>
+          <div class="alert-bar" id="pAlertBar">
+            <h4>⚠️ Doctor Alert — Action Needed</h4>
+            <p>Your risk score rose from 30% → 78% across your last 3 visits. <strong>Dr. Sharma has been
+                notified</strong> and left you a message. Tap "Chat with Doctor" to read it.</p>
+          </div>
+          <div class="p-ov-grid">
+            <div class="p-card">
+              <h3>Current Risk Score</h3>
+              <div class="sub">Based on your last check</div>
+              <div class="risk-big">78%</div>
+              <span class="rs-badge rsb-2">Stage 2</span>
+              <div style="margin-top:12px;font-size:.82rem;color:var(--soft);line-height:1.65">Your blood pressure is
+                elevated and needs medical attention. Please contact your doctor this week.</div>
+            </div>
+            <div class="p-card">
+              <h3>Visit History</h3>
+              <div class="sub">Risk scores across visits</div>
+              <div class="v-timeline">
+                <div class="vt-row">
+                  <div class="vt-dot" style="background:#2D7D5A"></div>
+                  <div class="vt-info">
+                    <div class="vt-lbl">Visit 1</div>
+                    <div class="vt-sc" style="color:#2D7D5A">30% — Normal</div>
+                  </div>
+                  <div class="vt-dt">Jan 5</div>
+                </div>
+                <div class="vt-row">
+                  <div class="vt-dot" style="background:#F59E0B"></div>
+                  <div class="vt-info">
+                    <div class="vt-lbl">Visit 2</div>
+                    <div class="vt-sc" style="color:#F59E0B">55% — Stage 1</div>
+                  </div>
+                  <div class="vt-dt">Jan 28</div>
+                </div>
+                <div class="vt-row">
+                  <div class="vt-dot" style="background:#E8402A"></div>
+                  <div class="vt-info">
+                    <div class="vt-lbl">Visit 3</div>
+                    <div class="vt-sc" style="color:#E8402A">78% — Stage 2 ⚠️</div>
+                  </div>
+                  <div class="vt-dt">Feb 15</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:18px">
+            <div class="msg-teaser" onclick="pPanel('p-chat')">
+              <div class="msg-teaser-inner">
+                <div
+                  style="width:42px;height:42px;background:#2D7D5A;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:white;flex-shrink:0">
+                  👨‍⚕️</div>
+                <div style="flex:1">
+                  <div style="font-weight:700;font-size:.92rem">Dr. Sharma left you a message</div>
+                  <div style="font-size:.8rem;color:var(--soft)">"Hello Jane, I reviewed your latest risk report. Please
+                    see my notes..."</div>
+                </div>
+                <div
+                  style="background:var(--red);color:white;width:20px;height:20px;border-radius:50%;font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center">
+                  1</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Risk Checker -->
+        <div class="p-panel" id="p-ck">
+          <h2 style="font-family:'Fraunces',serif;font-size:1.55rem;font-weight:700;margin-bottom:5px">Check My Risk 🔍
+          </h2>
+          <p style="color:var(--soft);font-size:.88rem;margin-bottom:20px">Enter your details to get an AI-powered risk
+            assessment and downloadable health report.</p>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
+
+            <!-- LEFT: Input Form -->
+            <div class="ck-card">
+              <h3>🩺 Your Details</h3>
+              <div class="sub" style="margin-bottom:14px">Fill in your info for accurate results.</div>
+
+              <!-- Personal -->
+              <div
+                style="font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">
+                Personal Info</div>
+              <div class="ck-row">
+                <div class="ck-fld"><label>Full Name</label><input type="text" id="ck-name" placeholder="e.g. Jane Doe">
+                </div>
+                <div class="ck-fld"><label>Date of Birth</label><input type="date" id="ck-dob"></div>
+              </div>
+              <div class="ck-row">
+                <div class="ck-fld"><label>Contact</label><input type="text" id="ck-contact"
+                    placeholder="+91-XXXXXXXXXX"></div>
+                <div class="ck-fld"><label>Gender</label><select id="ck-gen">
+                    <option value="">Select…</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select></div>
+              </div>
+
+              <!-- Clinical -->
+              <div
+                style="font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.06em;margin:12px 0 8px">
+                Clinical Readings</div>
+              <div class="ck-row">
+                <div class="ck-fld"><label>Age (years)</label><input type="number" id="ck-age" placeholder="45" min="1"
+                    max="120"></div>
+                <div class="ck-fld"><label>BMI</label><input type="number" id="ck-bmi" placeholder="28.5" step="0.1">
+                </div>
+              </div>
+              <div class="ck-row">
+                <div class="ck-fld"><label>Systolic BP (mmHg)</label><input type="number" id="ck-sys" placeholder="145">
+                </div>
+                <div class="ck-fld"><label>Diastolic BP (mmHg)</label><input type="number" id="ck-dia" placeholder="92">
+                </div>
+              </div>
+              <div class="ck-row">
+                <div class="ck-fld"><label>Heart Rate (bpm)</label><input type="number" id="ck-hr" placeholder="78">
+                </div>
+                <div class="ck-fld"><label>Cholesterol (mg/dL)</label><input type="number" id="ck-chol"
+                    placeholder="220"></div>
+              </div>
+              <div class="ck-row">
+                <div class="ck-fld"><label>Glucose (mg/dL)</label><input type="number" id="ck-glu" placeholder="100">
+                </div>
+                <div class="ck-fld"><label>Stress Level (1–10)</label><input type="number" id="ck-stress"
+                    placeholder="7" min="1" max="10"></div>
+              </div>
+
+              <!-- Lifestyle -->
+              <div
+                style="font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.06em;margin:12px 0 8px">
+                Lifestyle</div>
+              <div class="ck-row">
+                <div class="ck-fld"><label>Do you smoke?</label><select id="ck-smk">
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                  </select></div>
+                <div class="ck-fld"><label>Alcohol?</label><select id="ck-alc">
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                  </select></div>
+              </div>
+              <div class="ck-row">
+                <div class="ck-fld"><label>Physical Activity (hrs/week)</label><input type="number" id="ck-act"
+                    placeholder="3" min="0" max="40"></div>
+              </div>
+
+              <button class="btn-ck" id="ck-btn" onclick="runCheck()">🔍 Analyse My Risk</button>
+              <p style="font-size:.74rem;color:var(--soft);margin-top:10px;text-align:center">⚠️ Educational estimate
+                only — always consult your doctor.</p>
+            </div>
+
+            <!-- RIGHT: Results Panel -->
+            <div>
+              <!-- Empty state -->
+              <div id="ck-empty"
+                style="background:white;border-radius:16px;padding:48px 20px;text-align:center;border:2px dashed var(--warm)">
+                <div style="font-size:3rem;margin-bottom:12px;opacity:.3">📊</div>
+                <div style="color:var(--soft);font-size:.88rem;line-height:1.65">Fill in your details and
+                  click<br><strong>Analyse My Risk</strong> to see your results here.</div>
+              </div>
+
+              <!-- Results (shown after analysis) -->
+              <div class="res-panel" id="ck-results">
+                <!-- Stage box -->
+                <div class="res-stage-box" id="ck-stage-box">
+                  <div class="res-stage-name" id="ck-stage-name">—</div>
+                  <div class="res-score-txt" id="ck-score-txt">Risk Score: —</div>
+                </div>
+
+                <!-- Risk bar -->
+                <div class="res-bar-wrap">
+                  <div
+                    style="display:flex;justify-content:space-between;font-size:12px;color:var(--soft);margin-bottom:5px">
+                    <span>Overall Risk Level</span><span id="ck-bar-pct">0%</span>
+                  </div>
+                  <div class="res-bar-bg">
+                    <div class="res-bar-fill" id="ck-bar-fill" style="width:0%"></div>
+                  </div>
+                </div>
+
+                <!-- Probabilities -->
+                <div class="res-divider">Stage Probabilities</div>
+                <div class="res-prob-grid" id="ck-prob-grid"></div>
+
+                <!-- Recommendations -->
+                <div class="res-divider">Recommendations</div>
+                <div class="res-rec-box" id="ck-rec-box">—</div>
+
+                <!-- PDF Download Button -->
+                <div class="res-divider">Report</div>
+                <button class="btn-pdf" id="ck-pdf-btn" onclick="downloadPDF()">
+                  <div class="pdf-spinner" id="ck-pdf-spinner"></div>
+                  <span id="ck-pdf-txt">📄 Download PDF Report</span>
+                </button>
+                <div class="pdf-status" id="ck-pdf-status"></div>
+
+                <p style="font-size:.72rem;color:var(--soft);margin-top:10px;text-align:center;line-height:1.5">
+                  ⚠️ Not a substitute for professional medical advice.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Patient Chat -->
+        <div class="p-panel" id="p-chat" style="padding:0">
+          <div class="inbox" style="height:calc(100vh - 60px)">
+            <div class="conv-list">
+              <div class="cl-top">
+                <h3>My Doctors</h3>
+                <p>Your care team</p>
+              </div>
+              <div class="cl-scroll">
+                <div class="ci on" id="pci-sharma" onclick="selPConv('sharma',this)">
+                  <div class="ci-av" style="background:#2D7D5A">👨‍⚕️</div>
+                  <div class="ci-info">
+                    <div class="ci-name">Dr. R. Sharma</div>
+                    <div class="ci-prev">I've reviewed your latest report...</div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+                    <div class="ci-time">2h ago</div>
+                    <div class="ci-unread">1</div>
+                  </div>
+                </div>
+                <div class="ci" id="pci-patel" onclick="selPConv('patel',this)">
+                  <div class="ci-av" style="background:#5C3D2E">👩‍⚕️</div>
+                  <div class="ci-info">
+                    <div class="ci-name">Dr. A. Patel</div>
+                    <div class="ci-prev">See you at your next appointment!</div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+                    <div class="ci-time">3d ago</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="chat-win">
+              <div class="cw-top">
+                <div class="cw-av" id="pcwAv" style="background:#2D7D5A">👨‍⚕️</div>
+                <div>
+                  <div class="cw-name" id="pcwName">Dr. R. Sharma</div>
+                  <div class="cw-status">Online</div>
+                </div>
+                <div class="cw-tag" id="pcwTag">Cardiologist · PulseGuard Portal</div>
+              </div>
+              <div class="chat-msgs" id="pMsgs"></div>
+              <div class="cw-input">
+                <input class="cw-txt" id="pMsgIn" placeholder="Type a message to your doctor…"
+                  onkeypress="if(event.key==='Enter')sendPMsg()" />
+                <button class="btn-snd" onclick="sendPMsg()">➤</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Health Tips -->
+        <div class="p-panel" id="p-tips">
+          <h2 style="font-family:'Fraunces',serif;font-size:1.55rem;font-weight:700;margin-bottom:5px">Health Tips 💡
+          </h2>
+          <p style="color:var(--soft);font-size:.88rem;margin-bottom:20px">Simple things you can do every day to keep
+            your heart happy.</p>
+          <div class="tips-grid">
+            <div class="p-card">
+              <div style="font-size:1.8rem;margin-bottom:8px">🥗</div>
+              <h3>Eat Less Salt</h3>
+              <p style="font-size:.85rem;color:var(--mid);margin-top:5px;line-height:1.65">Try to keep salt under 5g per
+                day. Avoid processed foods like chips and instant noodles. Home cooked meals are your friend!</p>
+            </div>
+            <div class="p-card">
+              <div style="font-size:1.8rem;margin-bottom:8px">🚶</div>
+              <h3>Walk 30 Minutes Daily</h3>
+              <p style="font-size:.85rem;color:var(--mid);margin-top:5px;line-height:1.65">Even a gentle 30-minute walk
+                makes a huge difference for blood pressure. You don't need to run — just keep moving.</p>
+            </div>
+            <div class="p-card">
+              <div style="font-size:1.8rem;margin-bottom:8px">😴</div>
+              <h3>Sleep 7–8 Hours</h3>
+              <p style="font-size:.85rem;color:var(--mid);margin-top:5px;line-height:1.65">Poor sleep can raise your
+                blood pressure. Try to go to bed and wake up at the same time each day.</p>
+            </div>
+            <div class="p-card">
+              <div style="font-size:1.8rem;margin-bottom:8px">🫁</div>
+              <h3>Breathe Deeply</h3>
+              <p style="font-size:.85rem;color:var(--mid);margin-top:5px;line-height:1.65">5 minutes of slow deep
+                breathing lowers your BP on the spot. Breathe in 4 counts, hold 4, out for 6.</p>
+            </div>
+            <div class="p-card">
+              <div style="font-size:1.8rem;margin-bottom:8px">☕</div>
+              <h3>Limit Caffeine</h3>
+              <p style="font-size:.85rem;color:var(--mid);margin-top:5px;line-height:1.65">Too much coffee or tea can
+                spike blood pressure. Keep it to 1–2 cups a day and avoid it in the evenings.</p>
+            </div>
+            <div class="p-card">
+              <div style="font-size:1.8rem;margin-bottom:8px">💊</div>
+              <h3>Take Meds as Prescribed</h3>
+              <p style="font-size:.85rem;color:var(--mid);margin-top:5px;line-height:1.65">If your doctor prescribed
+                medication, take it every day even when you feel fine. Missing doses is one of the most common reasons
+                BP stays high.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+     DOCTOR DASHBOARD
+══════════════════════════════════════ -->
+  <div id="pg-doctor" class="pg">
+    <nav class="d-nav">
+      <div class="d-logo">
+        <div class="d-logo-mk">💓</div>
+        <div class="d-logo-tp">PULSE<span>GUARD</span> AI<span class="d-logo-bg">CLINICAL</span></div>
+      </div>
+      <div class="d-nav-links">
+        <button class="d-nav-btn on" onclick="dPanel('d-ov')">Overview</button>
+        <button class="d-nav-btn" onclick="dPanel('d-pts')">Patients</button>
+        <button class="d-nav-btn" onclick="dPanel('d-alerts')">Alerts</button>
+        <button class="d-nav-btn" onclick="dPanel('d-assess')">Assessment</button>
+        <button class="d-nav-btn" onclick="dPanel('d-chat')">Messages</button>
+      </div>
+      <div class="d-nav-r">
+        <span>👨‍⚕️</span>
+        <span class="d-ubadge" id="dNavName">Dr. Sharma</span>
+        <button class="btn-dso" onclick="signout()">Sign Out</button>
+      </div>
+    </nav>
+    <div class="d-body">
+      <div class="d-side">
+        <div class="d-side-sec">Dashboard</div>
+        <ul class="d-side-menu">
+          <li><a class="on" onclick="dPanel('d-ov')">📊 Overview</a></li>
+          <li><a onclick="dPanel('d-pts')">👥 My Patients</a></li>
+          <li><a onclick="dPanel('d-alerts')">🚨 Alerts <span
+                style="background:#ef4444;color:white;font-size:.63rem;font-weight:700;padding:1px 6px;border-radius:100px;margin-left:3px">2</span></a>
+          </li>
+        </ul>
+        <div class="d-side-sec">Tools</div>
+        <ul class="d-side-menu">
+          <li><a onclick="dPanel('d-assess')">🔬 Patient Assessment</a></li>
+          <li><a onclick="dPanel('d-chat')">💬 Patient Messages</a></li>
+        </ul>
+      </div>
+      <div style="overflow-y:auto">
+
+        <!-- Overview -->
+        <div class="d-panel on" id="d-ov">
+          <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.9rem;letter-spacing:.5px;margin-bottom:3px">Welcome
+            back, <span id="dFirstName">Dr. Sharma</span></h2>
+          <p style="color:var(--dm);font-size:.85rem;margin-bottom:20px">Clinical Portal · Feb 18, 2026</p>
+          <div class="d-stats">
+            <div class="d-stat">
+              <div class="d-stat-n">12</div>
+              <div class="d-stat-l">Active Patients</div>
+            </div>
+            <div class="d-stat">
+              <div class="d-stat-n" style="color:#ef4444">2</div>
+              <div class="d-stat-l">High Alerts Today</div>
+            </div>
+            <div class="d-stat">
+              <div class="d-stat-n" style="color:#ffb020">3</div>
+              <div class="d-stat-l">Moderate Alerts</div>
+            </div>
+            <div class="d-stat">
+              <div class="d-stat-n">95.2%</div>
+              <div class="d-stat-l">Model Accuracy</div>
+            </div>
+          </div>
+          <div class="d-sec-title">Recent Alerts</div>
+          <div class="alert-list" style="max-width:780px;margin-bottom:24px">
+            <div class="al-item">
+              <div class="al-ico">🚨</div>
+              <div class="al-info">
+                <div class="al-name">Jane Doe — PT-2024-001</div>
+                <div class="al-detail">Risk drift: 30% → 78% over 3 visits · Stage 2 Hypertension</div>
+              </div>
+              <div class="al-time">2h ago</div><span class="al-badge alb-hi">HIGH</span><button class="btn-cp"
+                onclick="openDChat('jane')">💬 Message</button>
+            </div>
+            <div class="al-item">
+              <div class="al-ico">⚠️</div>
+              <div class="al-info">
+                <div class="al-name">Raj Kumar — PT-2024-007</div>
+                <div class="al-detail">Risk drift: 40% → 62% over 2 visits · Stage 1 borderline</div>
+              </div>
+              <div class="al-time">5h ago</div><span class="al-badge alb-md">MODERATE</span><button class="btn-cp"
+                onclick="openDChat('raj')">💬 Message</button>
+            </div>
+          </div>
+          <div class="d-sec-title">Patient Quick View</div>
+          <div class="pt-wrap" style="max-width:880px">
+            <table class="pt-tbl">
+              <thead>
+                <tr>
+                  <th>Patient</th>
+                  <th>Last BP</th>
+                  <th>Risk</th>
+                  <th>Stage</th>
+                  <th>Alert</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="pt-nm">Jane Doe</div>
+                    <div class="pt-id">PT-2024-001</div>
+                  </td>
+                  <td>145/92</td>
+                  <td><strong style="color:#E8402A">78%</strong></td>
+                  <td><span class="rp rp-2">Stage 2</span></td>
+                  <td><span class="ap ap-hi">HIGH</span></td>
+                  <td><button class="btn-cp" onclick="openDChat('jane')">💬 Chat</button></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="pt-nm">Raj Kumar</div>
+                    <div class="pt-id">PT-2024-007</div>
+                  </td>
+                  <td>135/84</td>
+                  <td><strong style="color:#F59E0B">62%</strong></td>
+                  <td><span class="rp rp-1">Stage 1</span></td>
+                  <td><span class="ap ap-md">MODERATE</span></td>
+                  <td><button class="btn-cp" onclick="openDChat('raj')">💬 Chat</button></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="pt-nm">Priya Nair</div>
+                    <div class="pt-id">PT-2024-012</div>
+                  </td>
+                  <td>118/76</td>
+                  <td><strong style="color:#2D7D5A">22%</strong></td>
+                  <td><span class="rp rp-n">Normal</span></td>
+                  <td><span class="ap ap-ok">STABLE</span></td>
+                  <td><button class="btn-cp" onclick="openDChat('priya')">💬 Chat</button></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="pt-nm">Arun Mehta</div>
+                    <div class="pt-id">PT-2024-018</div>
+                  </td>
+                  <td>125/80</td>
+                  <td><strong style="color:#2D7D5A">35%</strong></td>
+                  <td><span class="rp rp-n">Normal</span></td>
+                  <td><span class="ap ap-ok">STABLE</span></td>
+                  <td><button class="btn-cp" onclick="openDChat('arun')">💬 Chat</button></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="pt-nm">Sunita Rao</div>
+                    <div class="pt-id">PT-2024-023</div>
+                  </td>
+                  <td>158/98</td>
+                  <td><strong style="color:#E8402A">85%</strong></td>
+                  <td><span class="rp rp-c">Crisis Risk</span></td>
+                  <td><span class="ap ap-hi">HIGH</span></td>
+                  <td><button class="btn-cp" onclick="openDChat('sunita')">💬 Chat</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- All Patients -->
+        <div class="d-panel" id="d-pts">
+          <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.9rem;letter-spacing:.5px;margin-bottom:3px">My
+            Patients</h2>
+          <p style="color:var(--dm);font-size:.85rem;margin-bottom:20px">Full patient list with risk scores and actions
+          </p>
+          <div class="pt-wrap">
+            <table class="pt-tbl">
+              <thead>
+                <tr>
+                  <th>Patient</th>
+                  <th>Age</th>
+                  <th>Last BP</th>
+                  <th>Risk</th>
+                  <th>Stage</th>
+                  <th>Alert</th>
+                  <th>Last Visit</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="pt-nm">Jane Doe</div>
+                    <div class="pt-id">PT-2024-001</div>
+                  </td>
+                  <td>48</td>
+                  <td>145/92</td>
+                  <td><strong style="color:#E8402A">78%</strong></td>
+                  <td><span class="rp rp-2">Stage 2</span></td>
+                  <td><span class="ap ap-hi">HIGH</span></td>
+                  <td>Feb 15</td>
+                  <td><button class="btn-cp" onclick="openDChat('jane')">💬 Chat</button></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="pt-nm">Raj Kumar</div>
+                    <div class="pt-id">PT-2024-007</div>
+                  </td>
+                  <td>55</td>
+                  <td>135/84</td>
+                  <td><strong style="color:#F59E0B">62%</strong></td>
+                  <td><span class="rp rp-1">Stage 1</span></td>
+                  <td><span class="ap ap-md">MODERATE</span></td>
+                  <td>Feb 13</td>
+                  <td><button class="btn-cp" onclick="openDChat('raj')">💬 Chat</button></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="pt-nm">Priya Nair</div>
+                    <div class="pt-id">PT-2024-012</div>
+                  </td>
+                  <td>34</td>
+                  <td>118/76</td>
+                  <td><strong style="color:#2D7D5A">22%</strong></td>
+                  <td><span class="rp rp-n">Normal</span></td>
+                  <td><span class="ap ap-ok">STABLE</span></td>
+                  <td>Feb 10</td>
+                  <td><button class="btn-cp" onclick="openDChat('priya')">💬 Chat</button></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="pt-nm">Arun Mehta</div>
+                    <div class="pt-id">PT-2024-018</div>
+                  </td>
+                  <td>41</td>
+                  <td>125/80</td>
+                  <td><strong style="color:#2D7D5A">35%</strong></td>
+                  <td><span class="rp rp-n">Normal</span></td>
+                  <td><span class="ap ap-ok">STABLE</span></td>
+                  <td>Feb 8</td>
+                  <td><button class="btn-cp" onclick="openDChat('arun')">💬 Chat</button></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="pt-nm">Sunita Rao</div>
+                    <div class="pt-id">PT-2024-023</div>
+                  </td>
+                  <td>62</td>
+                  <td>158/98</td>
+                  <td><strong style="color:#E8402A">85%</strong></td>
+                  <td><span class="rp rp-c">Crisis Risk</span></td>
+                  <td><span class="ap ap-hi">HIGH</span></td>
+                  <td>Feb 17</td>
+                  <td><button class="btn-cp" onclick="openDChat('sunita')">💬 Chat</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Alerts -->
+        <div class="d-panel" id="d-alerts">
+          <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.9rem;letter-spacing:.5px;margin-bottom:3px">
+            Clinical Alerts</h2>
+          <p style="color:var(--dm);font-size:.85rem;margin-bottom:20px">Patients requiring immediate attention</p>
+          <div class="alert-list" style="max-width:800px">
+            <div class="al-item">
+              <div class="al-ico">🚨</div>
+              <div class="al-info">
+                <div class="al-name">Jane Doe — PT-2024-001</div>
+                <div class="al-detail">Risk drift: 30% → 78% (+48pp) · Stage 2 · BP 145/92 mmHg</div>
+              </div>
+              <div class="al-time">2h ago</div><span class="al-badge alb-hi">HIGH</span><button class="btn-cp"
+                onclick="openDChat('jane')">💬 Message</button>
+            </div>
+            <div class="al-item">
+              <div class="al-ico">🚨</div>
+              <div class="al-info">
+                <div class="al-name">Sunita Rao — PT-2024-023</div>
+                <div class="al-detail">Crisis Risk · BP 158/98 · Age 62 · Multiple risk factors present</div>
+              </div>
+              <div class="al-time">6h ago</div><span class="al-badge alb-hi">HIGH</span><button class="btn-cp"
+                onclick="openDChat('sunita')">💬 Message</button>
+            </div>
+            <div class="al-item">
+              <div class="al-ico">⚠️</div>
+              <div class="al-info">
+                <div class="al-name">Raj Kumar — PT-2024-007</div>
+                <div class="al-detail">Risk drift: 40% → 62% (+22pp) · Positive slope trend detected</div>
+              </div>
+              <div class="al-time">5h ago</div><span class="al-badge alb-md">MODERATE</span><button class="btn-cp"
+                onclick="openDChat('raj')">💬 Message</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Assessment -->
+        <div class="d-panel" id="d-assess">
+          <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.9rem;letter-spacing:.5px;margin-bottom:3px">Patient
+            Risk Assessment</h2>
+          <p style="color:var(--dm);font-size:.85rem;margin-bottom:20px">Enter patient data for AI-powered hypertension
+            risk evaluation</p>
+          <div class="da-form">
+            <div class="da-h3">📋 Patient Data Entry</div>
+            <div class="da-sub">Enter patient vitals and clinical history for risk assessment</div>
+            <div class="da-row">
+              <div class="da-fld"><label>Age</label><input type="number" id="da-age" placeholder="45"></div>
+              <div class="da-fld"><label>Gender</label><select id="da-gen">
+                  <option value="">Select…</option>
+                  <option>Male</option>
+                  <option>Female</option>
+                  <option>Other</option>
+                </select></div>
+              <div class="da-fld"><label>Patient ID</label><input type="text" id="da-pid" placeholder="PT-2024-XXX">
+              </div>
+            </div>
+            <div class="da-row">
+              <div class="da-fld"><label>Weight (kg)</label><input type="number" id="da-w" placeholder="75"
+                  oninput="calcBMI()"></div>
+              <div class="da-fld"><label>Height (cm)</label><input type="number" id="da-h" placeholder="170"
+                  oninput="calcBMI()"></div>
+              <div class="da-fld"><label>BMI (auto)</label><input type="text" id="da-bmi" placeholder="—" readonly
+                  style="background:#fafafa"></div>
+            </div>
+            <div class="da-row2">
+              <div class="da-fld"><label>Systolic BP (mmHg)</label><input type="number" id="da-sys" placeholder="140">
+              </div>
+              <div class="da-fld"><label>Diastolic BP (mmHg)</label><input type="number" id="da-dia" placeholder="90">
+              </div>
+            </div>
+            <div class="da-row">
+              <div class="da-fld"><label>Family History of HTN</label><select id="da-fam">
+                  <option value="">Select…</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                  <option value="unknown">Unknown</option>
+                </select></div>
+              <div class="da-fld"><label>Symptom Severity</label><select id="da-sym">
+                  <option value="">Select…</option>
+                  <option value="none">Asymptomatic</option>
+                  <option value="mild">Mild</option>
+                  <option value="moderate">Moderate</option>
+                  <option value="severe">Severe</option>
+                </select></div>
+              <div class="da-fld"><label>On BP Medication?</label><select id="da-med">
+                  <option value="">Select…</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select></div>
+            </div>
+            <button class="btn-da" onclick="runAssess()">🔬 Generate Risk Assessment</button>
+          </div>
+          <div class="da-result" id="da-res">
+            <div
+              style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:12px;border-bottom:1.5px solid var(--border)">
+              <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.5px">Risk Assessment Report
+              </div>
+              <div style="font-size:11px;color:var(--dm);font-weight:600;text-transform:uppercase" id="da-ts"></div>
+            </div>
+            <div class="da-rnum" id="da-rn" style="color:var(--grn)">—</div>
+            <div class="da-rstage" id="da-rs"></div>
+            <div class="da-bar">
+              <div class="da-bar-fill" id="da-bf" style="width:0;background:var(--grn)"></div>
+            </div>
+            <div class="da-notebox">
+              <div class="da-notelbl">Clinical Recommendation</div>
+              <div style="font-size:13px;color:var(--black);line-height:1.7" id="da-note"></div>
+            </div>
+            <div id="da-factors"></div>
+            <button class="btn-cp" style="padding:11px 20px;border-radius:8px;font-size:13px;margin-top:8px"
+              onclick="dPanel('d-chat')">💬 Message Patient</button>
+          </div>
+        </div>
+
+        <!-- Doctor Chat -->
+        <div class="d-panel" id="d-chat" style="padding:0">
+          <div class="d-inbox" style="height:calc(100vh - 60px)">
+            <div class="conv-list">
+              <div class="cl-top">
+                <h3>Patient Messages</h3>
+                <p>Your patient conversations</p>
+              </div>
+              <div class="cl-scroll">
+                <div class="ci on" id="dci-jane" onclick="selDConv('jane',this)">
+                  <div class="ci-av" style="background:#E8402A">JD</div>
+                  <div class="ci-info">
+                    <div class="ci-name">Jane Doe <span style="font-size:.68rem;color:var(--dm)">PT-001</span></div>
+                    <div class="ci-prev">I've been feeling dizzy...</div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+                    <div class="ci-time">2h ago</div>
+                    <div class="ci-unread">2</div>
+                  </div>
+                </div>
+                <div class="ci" id="dci-raj" onclick="selDConv('raj',this)">
+                  <div class="ci-av" style="background:#F59E0B">RK</div>
+                  <div class="ci-info">
+                    <div class="ci-name">Raj Kumar <span style="font-size:.68rem;color:var(--dm)">PT-007</span></div>
+                    <div class="ci-prev">When should I come back?</div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+                    <div class="ci-time">5h ago</div>
+                  </div>
+                </div>
+                <div class="ci" id="dci-priya" onclick="selDConv('priya',this)">
+                  <div class="ci-av" style="background:#2D7D5A">PN</div>
+                  <div class="ci-info">
+                    <div class="ci-name">Priya Nair <span style="font-size:.68rem;color:var(--dm)">PT-012</span></div>
+                    <div class="ci-prev">Thank you doctor!</div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+                    <div class="ci-time">3d ago</div>
+                  </div>
+                </div>
+                <div class="ci" id="dci-sunita" onclick="selDConv('sunita',this)">
+                  <div class="ci-av" style="background:#7C3AED">SR</div>
+                  <div class="ci-info">
+                    <div class="ci-name">Sunita Rao <span style="font-size:.68rem;color:var(--dm)">PT-023</span></div>
+                    <div class="ci-prev">I've been having headaches...</div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+                    <div class="ci-time">6h ago</div>
+                    <div class="ci-unread">1</div>
+                  </div>
+                </div>
+                <div class="ci" id="dci-arun" onclick="selDConv('arun',this)">
+                  <div class="ci-av" style="background:#0ea5e9">AM</div>
+                  <div class="ci-info">
+                    <div class="ci-name">Arun Mehta <span style="font-size:.68rem;color:var(--dm)">PT-018</span></div>
+                    <div class="ci-prev">Feeling good this week!</div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+                    <div class="ci-time">Feb 14</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="chat-win">
+              <div class="cw-top">
+                <div class="cw-av" id="dcwAv" style="background:#E8402A">JD</div>
+                <div>
+                  <div class="cw-name" id="dcwName">Jane Doe</div>
+                  <div class="cw-status">Active Patient</div>
+                </div>
+                <div class="cw-tag" id="dcwTag">78% Risk · Stage 2 · HIGH ALERT</div>
+              </div>
+              <div class="chat-msgs" id="dMsgs"></div>
+              <div class="cw-input">
+                <input class="cw-txt" id="dMsgIn" placeholder="Reply to patient…"
+                  onkeypress="if(event.key==='Enter')sendDMsg()" style="border-color:var(--border)" />
+                <button class="btn-snd" onclick="sendDMsg()" style="background:var(--grn);color:var(--black)">➤</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ════════════════════════════
+       API CONFIG & SESSION
+    ════════════════════════════ */
+    const API = "http://127.0.0.1:5001";
+    let authToken = sessionStorage.getItem('pg_token') || null;
+    let currentUser = JSON.parse(sessionStorage.getItem('pg_user') || 'null');
+
+    function saveSession(token, user) {
+      authToken = token;
+      currentUser = user;
+      sessionStorage.setItem('pg_token', token);
+      sessionStorage.setItem('pg_user', JSON.stringify(user));
+    }
+    function clearSession() {
+      authToken = null;
+      currentUser = null;
+      sessionStorage.removeItem('pg_token');
+      sessionStorage.removeItem('pg_user');
+    }
+    function authHeaders() {
+      const h = { 'Content-Type': 'application/json' };
+      if (authToken) h['Authorization'] = 'Bearer ' + authToken;
+      return h;
+    }
+
+    // Backend status check on page load
+    let backendOnline = false;
+    async function checkBackend() {
+      try {
+        const r = await fetch(API + '/', { method: 'GET', signal: AbortSignal.timeout(3000) });
+        backendOnline = r.ok;
+      } catch (e) { backendOnline = false; }
+    }
+    checkBackend();
+
+    /* ════════════════════════════
+       PAGE ROUTING
+    ════════════════════════════ */
+    function show(pg) {
+      document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
+      const el = document.getElementById('pg-' + pg);
+      if (el) el.classList.add('on');
+      window.scrollTo(0, 0);
+    }
+
+    /* ════════════════════════════
+       LOGIN
+    ════════════════════════════ */
+    let activeRole = 'patient';
+    function switchRole(r) {
+      activeRole = r;
+      document.getElementById('tab-pat').classList.toggle('active', r === 'patient');
+      document.getElementById('tab-doc').classList.toggle('active', r === 'doctor');
+      document.getElementById('form-patient').classList.toggle('on', r === 'patient');
+      document.getElementById('form-doctor').classList.toggle('on', r === 'doctor');
+    }
+
+    async function doLogin(type) {
+      const demoPatients = { jane: '1234', 'jane.doe': '1234', patient: '1234' };
+      const demoDoctors = { sharma: 'doc123', 'dr.sharma': 'doc123', doctor: 'doc123' };
+
+      if (type === 'patient') {
+        const u = document.getElementById('pu').value.trim().toLowerCase();
+        const p = document.getElementById('pp').value;
+        const errEl = document.getElementById('pe');
+        errEl.textContent = '';
+
+        // Try backend auth first
+        try {
+          const res = await fetch(`${API}/api/auth/login`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: u, password: p }),
+            signal: AbortSignal.timeout(3000)
+          });
+          if (res.ok) {
+            const data = await res.json();
+            saveSession(data.token, data.user);
+            document.getElementById('pNavName').textContent = data.user.name;
+            document.getElementById('pNavAv').textContent = data.user.name.split(' ').map(w => w[0]).join('');
+            document.getElementById('pFirstName').textContent = data.user.name.split(' ')[0];
+            show('patient'); pPanel('p-ov'); initPChat();
+            return;
+          }
+        } catch (e) { /* backend offline, try demo fallback */ }
+
+        // Demo fallback
+        if (demoPatients[u] === p) {
+          document.getElementById('pNavName').textContent = 'Jane Doe';
+          document.getElementById('pNavAv').textContent = 'JD';
+          document.getElementById('pFirstName').textContent = 'Jane';
+          show('patient'); pPanel('p-ov'); initPChat();
+        } else {
+          errEl.textContent = '⚠️ Wrong username or password. Try: jane / 1234';
+        }
+      } else {
+        const u = document.getElementById('du').value.trim().toLowerCase();
+        const p = document.getElementById('dp').value;
+        const errEl = document.getElementById('de');
+        errEl.textContent = '';
+
+        // Try backend auth first
+        try {
+          const res = await fetch(`${API}/api/auth/login`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: u, password: p }),
+            signal: AbortSignal.timeout(3000)
+          });
+          if (res.ok) {
+            const data = await res.json();
+            saveSession(data.token, data.user);
+            document.getElementById('dNavName').textContent = data.user.name;
+            document.getElementById('dFirstName').textContent = data.user.name;
+            show('doctor'); dPanel('d-ov'); initDChat();
+            return;
+          }
+        } catch (e) { /* backend offline, try demo fallback */ }
+
+        // Demo fallback
+        if (demoDoctors[u] === p) {
+          document.getElementById('dNavName').textContent = 'Dr. Sharma';
+          document.getElementById('dFirstName').textContent = 'Dr. Sharma';
+          show('doctor'); dPanel('d-ov'); initDChat();
+        } else {
+          errEl.textContent = '⚠️ Wrong credentials. Try: sharma / doc123';
+        }
+      }
+    }
+
+    function signout() {
+      clearSession();
+      document.getElementById('pu').value = '';
+      document.getElementById('pp').value = '';
+      document.getElementById('du').value = '';
+      document.getElementById('dp').value = '';
+      show('login');
+    }
+
+    /* ════════════════════════════
+       PATIENT PANELS
+    ════════════════════════════ */
+    function pPanel(id) {
+      document.querySelectorAll('.p-panel').forEach(p => p.classList.remove('on'));
+      document.getElementById(id).classList.add('on');
+      document.querySelectorAll('.p-side-menu li a').forEach(a => a.classList.remove('on'));
+      const map = { 'p-ov': 0, 'p-ck': 1, 'p-chat': 2, 'p-tips': 3 };
+      const links = document.querySelectorAll('.p-side-menu li a');
+      if (map[id] !== undefined) links[map[id]]?.classList.add('on');
+      if (id === 'p-chat') {
+        document.getElementById('p-unread-badge').style.display = 'none';
+      }
+    }
+
+    /* ════════════════════════════
+       RISK CHECKER + RESULTS + PDF
+    ════════════════════════════ */
+
+    const STAGE_COLORS = {
+      "Normal": { color: "#166534", bg: "#E6F5EE" },
+      "Stage 1": { color: "#92400E", bg: "#FEF3C7" },
+      "Stage 2": { color: "#B91C1C", bg: "#FEE2E2" },
+      "Crisis": { color: "#991b1b", bg: "#FEE2E2" },
+    };
+
+    const DEFAULT_RECS = {
+      "Normal": "✅ Great news! Your BP is in the healthy range.\n\n• Stay physically active — 150 min/week\n• Maintain a balanced diet\n• Monitor BP every 6–12 months\n• Get 7–8 hours of sleep nightly",
+      "Stage 1": "⚠️ Mildly elevated. Lifestyle changes can help.\n\n• Reduce salt to less than 2,300mg/day\n• Follow the DASH diet\n• Exercise 30 min/day, 5 days a week\n• Quit smoking and limit alcohol\n• Follow up with your doctor in 3 months",
+      "Stage 2": "🚨 Significantly elevated. Please take action.\n\n• Consult your doctor immediately\n• Strictly reduce salt intake\n• Monitor BP twice daily\n• Avoid processed foods\n• Stop smoking and alcohol completely",
+      "Crisis": "🆘 CRITICAL — Seek immediate medical attention!\n\n• Go to the nearest ER right away\n• Do NOT delay or wait\n• Avoid any physical exertion\n• This level can cause stroke or heart attack",
+    };
+
+    // Stores last prediction for PDF use
+    let lastPrediction = null;
+    let lastClinical = null;
+    let lastPatient = null;
+
+    async function runCheck() {
+      const btn = document.getElementById("ck-btn");
+      btn.textContent = "⏳ Analysing...";
+      btn.disabled = true;
+
+      // Build clinical inputs
+      const genderText = document.getElementById("ck-gen").value || "Unknown";
+      const genderNum = genderText === "Male" ? 1 : 0;
+
+      const clinical = {
+        age: parseFloat(document.getElementById("ck-age").value) || 45,
+        gender: genderNum,
+        bmi: parseFloat(document.getElementById("ck-bmi").value) || 25,
+        systolic_bp: parseFloat(document.getElementById("ck-sys").value) || 120,
+        diastolic_bp: parseFloat(document.getElementById("ck-dia").value) || 80,
+        heart_rate: parseFloat(document.getElementById("ck-hr").value) || 72,
+        cholesterol: parseFloat(document.getElementById("ck-chol").value) || 200,
+        glucose: parseFloat(document.getElementById("ck-glu").value) || 90,
+        smoking: parseFloat(document.getElementById("ck-smk").value) || 0,
+        alcohol: parseFloat(document.getElementById("ck-alc").value) || 0,
+        physical_activity: parseFloat(document.getElementById("ck-act").value) || 3,
+        stress_level: parseFloat(document.getElementById("ck-stress").value) || 5,
+      };
+
+      lastClinical = clinical;
+      lastPatient = {
+        name: document.getElementById("ck-name").value || "Patient",
+        date_of_birth: document.getElementById("ck-dob").value || "N/A",
+        gender: genderText,
+        contact: document.getElementById("ck-contact").value || "N/A",
+        address: "N/A",
+      };
+
+      try {
+        const res = await fetch(`${API}/api/predict/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(clinical),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Backend error");
+        }
+
+        lastPrediction = data.prediction;
+        showResults(data.prediction);
+
+      } catch (err) {
+
+        console.error("Backend / ML Error:", err);
+
+        // If it's a validation error, show it clearly
+        if (err.message.includes("Field") || err.message.includes("Missing")) {
+          alert("⚠️ " + err.message);
+        } else {
+          alert(
+            "❌ Backend / ML is NOT responding.\n\n" +
+            "Make sure:\n" +
+            "1. Flask server is running\n" +
+            "2. Port 5001 is free\n" +
+            "3. Model is loaded correctly\n\n" +
+            "Error: " + err.message
+          );
+        }
+
+      }
+
+      finally {
+        btn.textContent = "🔍 Analyse My Risk";
+        btn.disabled = false;
+      }
+    }
+
+    function localEstimate(c) {
+      // Simple rule-based fallback if backend is down
+      let stage = 0;
+      if (c.systolic_bp > 180 || c.diastolic_bp > 120) stage = 3;
+      else if (c.systolic_bp >= 140 || c.diastolic_bp >= 90) stage = 2;
+      else if (c.systolic_bp >= 130 || c.diastolic_bp >= 80) stage = 1;
+      const labels = ["Normal", "Stage 1", "Stage 2", "Crisis"];
+      const scores = [15, 38, 65, 88];
+      const probs = [[80, 10, 8, 2], [20, 55, 20, 5], [8, 15, 60, 17], [2, 5, 15, 78]];
+      return {
+        stage,
+        stage_label: labels[stage],
+        risk_score: scores[stage],
+        probabilities: Object.fromEntries(labels.map((l, i) => [l, probs[stage][i]])),
+      };
+    }
+
+    function showResults(prediction) {
+      const { stage_label, risk_score, probabilities } = prediction;
+      const style = STAGE_COLORS[stage_label] || STAGE_COLORS["Normal"];
+
+      // Hide empty state, show results
+      document.getElementById("ck-empty").style.display = "none";
+      document.getElementById("ck-results").classList.add("on");
+
+      // Stage box
+      const box = document.getElementById("ck-stage-box");
+      box.style.background = style.bg;
+      document.getElementById("ck-stage-name").style.color = style.color;
+      document.getElementById("ck-stage-name").textContent = stage_label;
+      document.getElementById("ck-score-txt").style.color = style.color;
+      document.getElementById("ck-score-txt").textContent = `Risk Score: ${risk_score.toFixed(1)}%`;
+
+      // Bar
+      document.getElementById("ck-bar-pct").textContent = `${risk_score.toFixed(1)}%`;
+      setTimeout(() => {
+        const fill = document.getElementById("ck-bar-fill");
+        fill.style.width = `${Math.min(risk_score, 100)}%`;
+        fill.style.background = style.color;
+      }, 100);
+
+      // Probabilities
+      const grid = document.getElementById("ck-prob-grid");
+      grid.innerHTML = "";
+      for (const [label, pct] of Object.entries(probabilities)) {
+        const c = STAGE_COLORS[label]?.color || "#888";
+        grid.innerHTML += `<div class="res-prob-item">
+      <div class="res-prob-pct" style="color:${c}">${parseFloat(pct).toFixed(1)}%</div>
+      <div class="res-prob-lbl">${label}</div>
+    </div>`;
+      }
+
+      // Recommendations
+      document.getElementById("ck-rec-box").textContent =
+        DEFAULT_RECS[stage_label] || "Please consult your healthcare provider.";
+
+      document.getElementById("ck-results").scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    async function downloadPDF() {
+      if (!lastPrediction) {
+        alert("Please run the risk analysis first!");
+        return;
+      }
+
+      const btn = document.getElementById("ck-pdf-btn");
+      const spinner = document.getElementById("ck-pdf-spinner");
+      const txt = document.getElementById("ck-pdf-txt");
+      const status = document.getElementById("ck-pdf-status");
+
+      btn.disabled = true;
+      spinner.style.display = "block";
+      txt.textContent = "Generating PDF...";
+      status.className = "pdf-status";
+
+      try {
+        const response = await fetch(`${API}/api/report/generate`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            patient_data: lastPatient,
+            clinical_inputs: lastClinical,
+          }),
+        });
+
+        if (!response.ok) throw new Error("PDF generation failed");
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `PulseGuard_${(lastPatient.name || "Report").replace(/ /g, "_")}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+
+        status.textContent = "✅ Report downloaded successfully!";
+        status.className = "pdf-status ok";
+
+      } catch (err) {
+        status.textContent = "❌ Could not generate PDF. Make sure backend is running on port 5001.";
+        status.className = "pdf-status err";
+      } finally {
+        btn.disabled = false;
+        spinner.style.display = "none";
+        txt.textContent = "📄 Download PDF Report";
+        setTimeout(() => { status.className = "pdf-status"; }, 5000);
+      }
+    }
+
+    /* ════════════════════════════
+       PATIENT CHAT
+    ════════════════════════════ */
+    const pDocs = {
+      sharma: { name: 'Dr. R. Sharma', av: '👨‍⚕️', col: '#2D7D5A', tag: 'Cardiologist · PulseGuard Portal' },
+      patel: { name: 'Dr. A. Patel', av: '👩‍⚕️', col: '#5C3D2E', tag: 'General Physician · PulseGuard Portal' },
+    };
+    const pMsgData = {
+      sharma: [{ f: 'doc', t: "Hello Jane! I've reviewed your latest PulseGuard risk report. Your score has risen to 78% (Stage 2). I'd like to discuss next steps — how have you been feeling lately?", ts: '10:22 AM' }],
+      patel: [{ f: 'doc', t: "Hi Jane! Just checking in. See you at your next appointment on Feb 28! Everything looks good on my end.", ts: 'Feb 15' }],
+    };
+    let curPConv = 'sharma';
+
+    function initPChat() { selPConv('sharma', document.getElementById('pci-sharma')) }
+    function selPConv(conv, el) {
+      curPConv = conv;
+      document.querySelectorAll('#p-chat .ci').forEach(i => i.classList.remove('on'));
+      el?.classList.add('on');
+      const d = pDocs[conv];
+      document.getElementById('pcwAv').textContent = d.av;
+      document.getElementById('pcwAv').style.background = d.col;
+      document.getElementById('pcwName').textContent = d.name;
+      document.getElementById('pcwTag').textContent = d.tag;
+      renderPMsgs(conv);
+    }
+    function renderPMsgs(conv) {
+      const c = document.getElementById('pMsgs');
+      c.innerHTML = '';
+      (pMsgData[conv] || []).forEach(m => {
+        const d = pDocs[conv];
+        const row = document.createElement('div');
+        row.className = 'mr' + (m.f === 'me' ? ' me' : '');
+        if (m.f === 'me') {
+          row.innerHTML = `<div class="mr-av" style="background:#E8402A">JD</div><div><div class="mb">${m.t}</div><div class="mt">${m.ts}</div></div>`;
+        } else {
+          row.innerHTML = `<div class="mr-av" style="background:${d.col}">${d.av}</div><div><div class="mb">${m.t}</div><div class="mt">${m.ts}</div></div>`;
+        }
+        c.appendChild(row);
+      });
+      c.scrollTop = c.scrollHeight;
+    }
+    async function sendPMsg() {
+      const inp = document.getElementById('pMsgIn');
+      const txt = inp.value.trim();
+      if (!txt) return;
+      if (!pMsgData[curPConv]) pMsgData[curPConv] = [];
+      pMsgData[curPConv].push({ f: 'me', t: txt, ts: now() });
+      renderPMsgs(curPConv);
+      inp.value = '';
+      const c = document.getElementById('pMsgs');
+
+      // Show typing indicator
+      const tr = document.createElement('div'); tr.className = 'typ-row'; tr.id = 'pt';
+      const docInfo = pDocs[curPConv];
+      tr.innerHTML = `<div class="mr-av" style="background:${docInfo.col}">${docInfo.av}</div><div class="typ-bbl"><div class="td"></div><div class="td"></div><div class="td"></div></div>`;
+      setTimeout(() => { c.appendChild(tr); c.scrollTop = c.scrollHeight; }, 400);
+
+      // Try chatbot API, fallback to hardcoded replies
+      const fallbackReplies = ["Thank you Jane. Please monitor your readings daily and let me know if they go above 150/95.", "I understand. Please come in for a visit within 3–4 days — I'll arrange a slot.", "Please rest and avoid strenuous activity for now. We'll discuss more at your next visit.", "Very good — keep tracking those readings. Your PulseGuard data is very helpful.", "If you feel any chest pain or severe headache, please go to the emergency room immediately."];
+      let reply;
+      try {
+        const res = await fetch(`${API}/api/chatbot/ask`, {
+          method: 'POST', headers: authHeaders(),
+          body: JSON.stringify({ question: txt }),
+          signal: AbortSignal.timeout(8000)
+        });
+        if (res.ok) {
+          const data = await res.json();
+          reply = data.response;
+        } else { throw new Error('API error'); }
+      } catch (e) {
+        reply = fallbackReplies[Math.floor(Math.random() * fallbackReplies.length)];
+      }
+
+      document.getElementById('pt')?.remove();
+      pMsgData[curPConv].push({ f: 'doc', t: reply, ts: now() });
+      renderPMsgs(curPConv);
+    }
+
+    /* ════════════════════════════
+       DOCTOR PANELS
+    ════════════════════════════ */
+    function dPanel(id) {
+      document.querySelectorAll('.d-panel').forEach(p => p.classList.remove('on'));
+      document.getElementById(id).classList.add('on');
+      document.querySelectorAll('.d-nav-btn').forEach(b => b.classList.remove('on'));
+      document.querySelectorAll('.d-side-menu li a').forEach(a => a.classList.remove('on'));
+      const nmap = { 'd-ov': 0, 'd-pts': 1, 'd-alerts': 2, 'd-assess': 3, 'd-chat': 4 };
+      const smap = { 'd-ov': 0, 'd-pts': 1, 'd-alerts': 2, 'd-assess': 3, 'd-chat': 4 };
+      const ni = nmap[id]; const si = smap[id];
+      if (ni !== undefined) document.querySelectorAll('.d-nav-btn')[ni]?.classList.add('on');
+      // sidebar: Overview=0, Patients=1, Alerts=2 | Assessment=3, Chat=4
+      const slinks = document.querySelectorAll('.d-side-menu li a');
+      const sidx = { 'd-ov': 0, 'd-pts': 1, 'd-alerts': 2, 'd-assess': 3, 'd-chat': 4 };
+      if (sidx[id] !== undefined) slinks[sidx[id]]?.classList.add('on');
+    }
+
+    /* Assessment */
+    function calcBMI() {
+      const w = parseFloat(document.getElementById('da-w').value);
+      const h = parseFloat(document.getElementById('da-h').value);
+      if (w && h) document.getElementById('da-bmi').value = (w / Math.pow(h / 100, 2)).toFixed(1);
+    }
+    async function runAssess() {
+      const sys = parseInt(document.getElementById('da-sys').value) || 0;
+      const dia = parseInt(document.getElementById('da-dia').value) || 0;
+      const age = parseInt(document.getElementById('da-age').value) || 0;
+      const bmi = parseFloat(document.getElementById('da-bmi').value) || 25;
+      const genText = document.getElementById('da-gen').value || 'Unknown';
+      const genNum = genText === 'Male' ? 1 : 0;
+      const fam = document.getElementById('da-fam').value;
+      const sym = document.getElementById('da-sym').value;
+      const med = document.getElementById('da-med').value;
+
+      // Try backend ML prediction first
+      let sc, st, sc_cls, rec, col;
+      try {
+        const clinical = {
+          age, gender: genNum, bmi, systolic_bp: sys, diastolic_bp: dia,
+          heart_rate: 72, cholesterol: 200, glucose: 90,
+          smoking: 0, alcohol: 0, physical_activity: 3, stress_level: 5
+        };
+        const res = await fetch(`${API}/api/predict/`, {
+          method: 'POST', headers: authHeaders(),
+          body: JSON.stringify(clinical),
+          signal: AbortSignal.timeout(5000)
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const p = data.prediction;
+          sc = p.risk_score;
+          st = p.stage_label;
+          const stageMap = { 'Normal': 's-normal', 'Stage 1': 's-1', 'Stage 2': 's-2', 'Crisis': 's-crisis' };
+          const colMap = { 'Normal': '#22c55e', 'Stage 1': '#fbbf24', 'Stage 2': '#f59e0b', 'Crisis': '#ef4444' };
+          sc_cls = stageMap[st] || 's-normal';
+          col = colMap[st] || '#22c55e';
+          rec = DEFAULT_RECS[st] || 'Please consult your healthcare provider.';
+        } else { throw new Error('API error'); }
+      } catch (e) {
+        // Fallback: client-side rule-based assessment
+        sc = 0; st = ''; sc_cls = ''; rec = ''; col = '#00c896';
+        if (sys >= 180 || dia >= 120) { sc = 88; st = 'Hypertensive Crisis'; sc_cls = 's-crisis'; col = '#ef4444'; rec = '⚠️ CRITICAL: Emergency department referral may be required. Assess for end-organ damage immediately.' }
+        else if (sys >= 140 || dia >= 90) { sc = 68; st = 'Stage 2 Hypertension'; sc_cls = 's-2'; col = '#f59e0b'; rec = 'Initiate or intensify antihypertensive therapy. Consider combination therapy. Follow-up within 1 month.' }
+        else if (sys >= 130 || dia >= 80) { sc = 42; st = 'Stage 1 Hypertension'; sc_cls = 's-1'; col = '#fbbf24'; rec = 'Initiate lifestyle modifications. Consider pharmacotherapy if CV risk factors present. Follow-up in 3–6 months.' }
+        else { sc = 20; st = 'Normal BP'; sc_cls = 's-normal'; col = '#22c55e'; rec = 'Continue preventive strategies. Routine monitoring per clinical guidelines.' }
+        if (age > 65) sc += 10; else if (age > 50) sc += 6;
+        if (fam === 'yes') sc += 7;
+        if (sym === 'severe') sc += 12; else if (sym === 'moderate') sc += 7; else if (sym === 'mild') sc += 3;
+        if (med === 'no' && sc > 50) sc += 5;
+        sc = Math.min(sc, 95);
+      }
+
+      const card = document.getElementById('da-res');
+      card.classList.add('on');
+      document.getElementById('da-rn').textContent = (typeof sc === 'number' ? sc.toFixed(1) : sc) + '%';
+      document.getElementById('da-rn').style.color = col;
+      const rsEl = document.getElementById('da-rs');
+      rsEl.textContent = st; rsEl.className = 'da-rstage ' + sc_cls;
+      document.getElementById('da-bf').style.width = Math.min(sc, 100) + '%';
+      document.getElementById('da-bf').style.background = col;
+      document.getElementById('da-note').textContent = rec;
+      document.getElementById('da-ts').textContent = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    /* Doctor chat */
+    const dPts = {
+      jane: { name: 'Jane Doe', init: 'JD', col: '#E8402A', tag: '78% Risk · Stage 2 · HIGH ALERT' },
+      raj: { name: 'Raj Kumar', init: 'RK', col: '#F59E0B', tag: '62% Risk · Stage 1 · MODERATE' },
+      priya: { name: 'Priya Nair', init: 'PN', col: '#2D7D5A', tag: '22% Risk · Normal · STABLE' },
+      arun: { name: 'Arun Mehta', init: 'AM', col: '#0ea5e9', tag: '35% Risk · Normal · STABLE' },
+      sunita: { name: 'Sunita Rao', init: 'SR', col: '#7C3AED', tag: '85% Risk · Crisis Risk · HIGH' },
+    };
+    const dMsgData = {
+      jane: [{ f: 'pat', t: "Hi Doctor, I've been feeling dizzy and had a slight headache this morning. Is this related to my blood pressure?", ts: '9:45 AM' }, { f: 'doc', t: "Hello Jane! I've reviewed your PulseGuard report. Your score has risen to 78% (Stage 2). How are you feeling right now?", ts: '10:22 AM' }, { f: 'pat', t: "I'm also a bit short of breath. Should I come in?", ts: '10:31 AM' }],
+      raj: [{ f: 'pat', t: "Doctor, when should I come back for a follow-up? My readings have been a bit high at home.", ts: '7:15 AM' }],
+      priya: [{ f: 'pat', t: "Thank you doctor! My readings have been great. The daily walking routine really helped!", ts: 'Feb 15, 4:20 PM' }],
+      sunita: [{ f: 'pat', t: "Doctor, I've been having very bad headaches and my vision feels a bit blurry. Is this serious?", ts: '8:00 AM' }],
+      arun: [{ f: 'pat', t: "Feeling much better this week Doctor! Reduced salt as you suggested and my readings are back to normal.", ts: 'Feb 14, 2:00 PM' }],
+    };
+    let curDConv = 'jane';
+
+    function initDChat() { selDConv('jane', document.getElementById('dci-jane')) }
+    function openDChat(conv) {
+      dPanel('d-chat');
+      selDConv(conv, document.getElementById('dci-' + conv));
+    }
+    function selDConv(conv, el) {
+      curDConv = conv;
+      document.querySelectorAll('#d-chat .ci').forEach(i => i.classList.remove('on'));
+      el?.classList.add('on');
+      const d = dPts[conv];
+      document.getElementById('dcwAv').textContent = d.init;
+      document.getElementById('dcwAv').style.background = d.col;
+      document.getElementById('dcwName').textContent = d.name;
+      document.getElementById('dcwTag').textContent = d.tag;
+      renderDMsgs(conv);
+    }
+    function renderDMsgs(conv) {
+      const c = document.getElementById('dMsgs');
+      c.innerHTML = '';
+      const d = dPts[conv];
+      (dMsgData[conv] || []).forEach(m => {
+        const row = document.createElement('div');
+        row.className = 'mr' + (m.f === 'doc' ? ' me' : '');
+        if (m.f === 'doc') {
+          row.innerHTML = `<div class="mr-av" style="background:#2D7D5A">Dr</div><div><div class="mb">${m.t}</div><div class="mt">${m.ts}</div></div>`;
+        } else {
+          row.innerHTML = `<div class="mr-av" style="background:${d.col}">${d.init}</div><div><div class="mb">${m.t}</div><div class="mt">${m.ts}</div></div>`;
+        }
+        c.appendChild(row);
+      });
+      c.scrollTop = c.scrollHeight;
+    }
+    function sendDMsg() {
+      const inp = document.getElementById('dMsgIn');
+      const txt = inp.value.trim();
+      if (!txt) return;
+      if (!dMsgData[curDConv]) dMsgData[curDConv] = [];
+      dMsgData[curDConv].push({ f: 'doc', t: txt, ts: now() });
+      renderDMsgs(curDConv);
+      inp.value = '';
+      const c = document.getElementById('dMsgs');
+      const d = dPts[curDConv];
+      setTimeout(() => {
+        const tr = document.createElement('div'); tr.className = 'typ-row'; tr.id = 'dt';
+        tr.innerHTML = `<div class="mr-av" style="background:${d.col}">${d.init}</div><div class="typ-bbl"><div class="td"></div><div class="td"></div><div class="td"></div></div>`;
+        c.appendChild(tr); c.scrollTop = c.scrollHeight;
+      }, 500);
+      setTimeout(() => {
+        document.getElementById('dt')?.remove();
+        const replies = ["Thank you Doctor, I'll follow your advice.", "Understood! I'll come in for a visit. When is a good slot?", "Should I stop my current medication and wait for the appointment?", "OK Doctor. Should I check my readings at home too?", "Thank you for the quick response. I feel better knowing you're monitoring this."];
+        dMsgData[curDConv].push({ f: 'pat', t: replies[Math.floor(Math.random() * replies.length)], ts: now() });
+        renderDMsgs(curDConv);
+      }, 2200);
+    }
+
+    /* ════════════════════════════
+       UTILS
+    ════════════════════════════ */
+    function now() { return new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) }
+
+    /* Scroll reveal */
+    window.addEventListener('scroll', () => {
+      document.querySelectorAll('#pg-landing .rv:not(.vi)').forEach(el => {
+        if (el.getBoundingClientRect().top < window.innerHeight - 60) el.classList.add('vi');
+      });
+    });
+    setTimeout(() => window.dispatchEvent(new Event('scroll')), 100);
+  </script>
+
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+     PULSEGUARD AI CHATBOT WIDGET
+  ═══════════════════════════════════════════════════════════════════ -->
+
+  <!-- CHATBOT BUTTON -->
+  <button id="chatBtn" onclick="toggleChat()">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  </button>
+
+  <!-- CHATBOT WIDGET -->
+  <div id="chatbot">
+    <div class="chat-header">
+      <div class="chat-header-avatar">🤖</div>
+      <div class="chat-header-info">
+        <div class="chat-header-title">PulseGuard AI Assistant</div>
+        <div class="chat-header-status">
+          <span class="chat-online-dot"></span>
+          Online · Ready to help
+        </div>
+      </div>
+      <button class="chat-header-close" onclick="toggleChat()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="chat-msgs" id="chatMsgs">
+      <div class="chat-msg bot">
+        <div class="chat-avatar">🤖</div>
+        <div class="chat-bubble bot-bubble">
+          Hello! I'm your PulseGuard AI assistant. I can help you understand your blood pressure results, explain
+          hypertension stages, and answer health questions. How can I help you today?
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input-wrap">
+      <input type="text" class="chat-input" id="chatInput" placeholder="Ask me anything about your health..."
+        onkeypress="if(event.key==='Enter')sendChatMsg()" />
+      <button class="chat-send-btn" onclick="sendChatMsg()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <line x1="22" y1="2" x2="11" y2="13" />
+          <polygon points="22 2 15 22 11 13 2 9 22 2" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- CHATBOT STYLES -->
+  <style>
+    /* ═══════════════════════════════════════
+     AI CHATBOT WIDGET STYLES
+  ════════════════════════════════════════ */
+    #chatbot {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 380px;
+      height: 520px;
+      background: rgba(26, 16, 8, 0.98);
+      border: 1.5px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6);
+      display: none;
+      flex-direction: column;
+      z-index: 10000;
+      animation: chatSlideIn .3s ease;
+    }
+
+    #chatbot.on {
+      display: flex
+    }
+
+    @keyframes chatSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .chat-header {
+      padding: 18px 20px;
+      background: linear-gradient(135deg, #E8402A, #FF6B52);
+      border-radius: 20px 20px 0 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-header-avatar {
+      width: 38px;
+      height: 38px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+
+    .chat-header-info {
+      flex: 1
+    }
+
+    .chat-header-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: white;
+      margin-bottom: 2px;
+    }
+
+    .chat-header-status {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.7);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .chat-online-dot {
+      width: 7px;
+      height: 7px;
+      background: #00FF88;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: 0.4
+      }
+    }
+
+    .chat-header-close {
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.7);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s;
+      margin-left: auto;
+    }
+
+    .chat-header-close:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .chat-msgs {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .chat-msgs::-webkit-scrollbar {
+      width: 6px
+    }
+
+    .chat-msgs::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px
+    }
+
+    .chat-msg {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start
+    }
+
+    .chat-msg.user {
+      flex-direction: row-reverse
+    }
+
+    .chat-avatar {
+      width: 32px;
+      height: 32px;
+      background: rgba(232, 64, 42, 0.15);
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .chat-bubble {
+      max-width: 75%;
+      padding: 11px 14px;
+      border-radius: 16px;
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .bot-bubble {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .user-bubble {
+      background: #E8402A;
+      color: white;
+      border-radius: 16px 16px 4px 16px;
+    }
+
+    .typing-bubble {
+      display: flex;
+      gap: 5px;
+      padding: 14px 18px;
+    }
+
+    .typing-dot {
+      width: 7px;
+      height: 7px;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      animation: typingBounce 1.2s infinite;
+    }
+
+    .typing-dot:nth-child(2) {
+      animation-delay: .2s
+    }
+
+    .typing-dot:nth-child(3) {
+      animation-delay: .4s
+    }
+
+    @keyframes typingBounce {
+
+      0%,
+      60%,
+      100% {
+        transform: translateY(0)
+      }
+
+      30% {
+        transform: translateY(-8px)
+      }
+    }
+
+    .chat-input-wrap {
+      padding: 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      gap: 10px;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 11px 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1.5px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      color: white;
+      outline: none;
+      transition: all .2s;
+    }
+
+    .chat-input::placeholder {
+      color: rgba(255, 255, 255, 0.3)
+    }
+
+    .chat-input:focus {
+      border-color: #E8402A;
+      background: rgba(232, 64, 42, 0.06);
+    }
+
+    .chat-send-btn {
+      width: 42px;
+      height: 42px;
+      background: #E8402A;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s;
+      flex-shrink: 0;
+    }
+
+    .chat-send-btn:hover {
+      background: #FF6B52;
+      transform: scale(1.05)
+    }
+
+    .chat-send-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: white;
+      stroke-width: 2.5
+    }
+
+    #chatBtn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #E8402A, #FF6B52);
+      border: none;
+      border-radius: 50%;
+      box-shadow: 0 8px 28px rgba(232, 64, 42, 0.4);
+      cursor: pointer;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .3s;
+    }
+
+    #chatBtn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 12px 36px rgba(232, 64, 42, 0.5)
+    }
+
+    #chatBtn svg {
+      stroke: white;
+      stroke-width: 2
+    }
+  </style>
+
+  <!-- CHATBOT JAVASCRIPT -->
+  <script src="chatbot.js?v=5"></script>
+
+</body>
+
+</html>
